@@ -41,7 +41,7 @@ void Player::Update()
 
     //ジャンプ入力 (接地中のみ)
     if (CheckHitKey(KEY_INPUT_SPACE) && !isJump) {
-        velocity.y = 15.0f; // 適切なジャンプ力に調整
+        velocity.y = 15.0f;
         isJump = true;
     }
 
