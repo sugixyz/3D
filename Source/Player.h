@@ -8,4 +8,6 @@ public:
 	~Player();
 	void Update() override;
 private:
+	VECTOR3 velocity;
+	bool isJump;
 };
