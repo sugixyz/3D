@@ -1,10 +1,12 @@
 #include "PlayScene.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "Stage.h"
 
 PlayScene::PlayScene()
 {
 	new Player();
+	new Enemy();
 	new Stage();
 }
 
