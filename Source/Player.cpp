@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "Stage.h"
 #include<cmath>
+#include "PlayScene.h"
 
 Player::Player()
 {
@@ -14,8 +15,7 @@ Player::Player()
 	rotation = VECTOR3(0, 0, 0);
 	velocity = VECTOR3(0, 0, 0);
 	isJump = false;
-    //camRotation = VECTOR3(0, 0, 0);
-    //mousePos = VECTOR3(0, 0, 0);
+    state = READY;
 }
 
 Player::~Player()
@@ -23,6 +23,25 @@ Player::~Player()
 }
 
 void Player::Update()
+{
+    switch (state) {
+    case INPLAY :
+    {
+        UpdateInplay();
+        break;
+    }
+    case OVER:
+    {
+        UpdateOver();
+        break;
+    }
+ }
+}
+
+void Player::UpdateReady() {
+}
+
+void Player::UpdateInplay()
 {
     if (CheckHitKey(KEY_INPUT_D)) rotation.y += 3.0f * DegToRad;
     if (CheckHitKey(KEY_INPUT_A)) rotation.y -= 3.0f * DegToRad;
@@ -68,7 +87,11 @@ void Player::Update()
 
     // 7. ÉJÉÅÉâçXêV
     VECTOR3 camPos;
-    if(CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
+    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
     else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
     SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
+}
+
+void Player::UpdateOver()
+{
 }

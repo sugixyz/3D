@@ -3,6 +3,7 @@
 #include "Stage.h"
 #include"Player.h"
 #include<cmath>
+#include "PlayScene.h"
 
 namespace {
 	const float DIST_LENGTH = 20.0f;
@@ -18,6 +19,7 @@ Enemy::Enemy()
 	position = VECTOR3(GetRand(5000)-2500, 500, GetRand(5000) - 2500);
 	rotation = VECTOR3(0, 0, 0);
 	velocity = VECTOR3(0, 0, 0);
+	state = State::READY;
 }
 
 Enemy::~Enemy()
@@ -25,6 +27,26 @@ Enemy::~Enemy()
 }
 
 void Enemy::Update()
+{
+	switch (state) {
+	case INPLAY:
+	{
+		UpdateInplay();
+		break;
+	}
+	case OVER:
+	{
+		UpdateOver();
+		break;
+	}
+	}
+}
+
+void Enemy::UpdateReady()
+{
+}
+
+void Enemy::UpdateInplay()
 {
 	//プレイヤーとの距離でラジアンをとる
 	Player* p = FindGameObject<Player>();
@@ -60,8 +82,13 @@ void Enemy::Update()
 	if (abs(p->GetPos().y - position.y) >= 20.0f)return;
 	//接触
 	if (VectorLength(p->GetPos(), position) < DIST_LENGTH) {
-		SceneManager::ChangeScene("TITLE");
+		//SceneManager::ChangeScene("TITLE");
+		GetScene<PlayScene>()->OnOver();
 	}
+}
+
+void Enemy::UpdateOver()
+{
 }
 
 float Enemy::VectorLength(const VECTOR3& player, const VECTOR3& enemy)

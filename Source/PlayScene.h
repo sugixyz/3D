@@ -11,6 +11,9 @@ public:
 	~PlayScene();
 	void Update() override;
 	void Draw() override;
+
+	void OnClear();
+	void OnOver();
 private:
 	float gTime;
 	enum State {

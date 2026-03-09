@@ -8,9 +8,17 @@ public:
 	~Player();
 	void Update() override;
 	bool IsJump() { return isJump; }
+	void PlayStart() { state = State::INPLAY; }
 private:
 	VECTOR3 velocity;
 	bool isJump;
-	//VECTOR3 camRotation;
-	//VECTOR3 mousePos;
+	enum State {
+		READY,
+		INPLAY,
+		OVER
+	};
+	State state;
+	void UpdateReady();
+	void UpdateInplay();
+	void UpdateOver();
 };
