@@ -1,14 +1,13 @@
 #include "Start.h"
 #include "Lerp.h"
 #include"DxLib.h"
+#include"Screen.h"
 
 Start::Start()
 {
-	position.x = 200;
-	position.y = 400;
-	startX = 800;
-	endX = 200;
-	maxTime = 5.0f;
+	position.x = Screen::WIDTH / 2 - 100;
+	position.y = 100;
+	maxTime = 2.0f;
 	time = 0;
 }
 
@@ -19,8 +18,6 @@ Start::~Start()
 void Start::Update()
 {
 	time += Time::DeltaTime();
-	float rate = time / maxTime;
-	position.x = Lerp<float>(startX, endX, rate, easeInSine);
 	if (time >= maxTime) {
 		DestroyMe();
 	}

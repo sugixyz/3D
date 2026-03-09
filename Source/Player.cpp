@@ -25,6 +25,11 @@ Player::~Player()
 void Player::Update()
 {
     switch (state) {
+    case READY:
+    {
+        UpdateReady();
+        break;
+    }
     case INPLAY :
     {
         UpdateInplay();
@@ -39,6 +44,23 @@ void Player::Update()
 }
 
 void Player::UpdateReady() {
+    //地面との当たり判定
+    Stage* stage = FindGameObject<Stage>();
+    VECTOR3 hitPos;
+    // 足元付近に地面があるかチェック
+    if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -100, 0), &hitPos)) {
+        // 「落下中」かつ「地面より下にいる」時だけ着地させる
+        if (velocity.y <= 0 && position.y <= hitPos.y) {
+            position.y = hitPos.y;
+        }
+    }
+
+    // カメラ更新
+    VECTOR3 camPos;
+    //Cキーでバックビュー
+    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
+    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
+    SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
 }
 
 void Player::UpdateInplay()
@@ -85,8 +107,9 @@ void Player::UpdateInplay()
         isJump = true; // 足元に地面がなければ空中
     }
 
-    // 7. カメラ更新
+    // カメラ更新
     VECTOR3 camPos;
+    //Cキーでバックビュー
     if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
     else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
     SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));

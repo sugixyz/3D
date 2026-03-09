@@ -84,6 +84,7 @@ void Enemy::UpdateInplay()
 	if (VectorLength(p->GetPos(), position) < DIST_LENGTH) {
 		//SceneManager::ChangeScene("TITLE");
 		GetScene<PlayScene>()->OnOver();
+		state = State::OVER;
 	}
 }
 

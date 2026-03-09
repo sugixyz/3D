@@ -4,14 +4,18 @@
 #include "Stage.h"
 #include"DxLib.h"
 #include"Start.h"
+#include"Fade.h"
+#include"CountDown.h"
 
 PlayScene::PlayScene()
 {
+	Fade* fade = new Fade();
 	new Player();
 	new Enemy();
 	new Stage();
-	state = State::READY;
+	state = State::COUNT;
 	gTime = 0;
+	fade->FadeIn(1.0);
 }
 
 PlayScene::~PlayScene()
@@ -21,12 +25,24 @@ PlayScene::~PlayScene()
 void PlayScene::Update()
 {
 	switch (state) {
-	case READY: 
+	case COUNT: 
 	{
 		if (gTime < 1.0f) {
 			gTime += Time::DeltaTime();
 			if (gTime >= 1.0f) {
-				//仮表示
+				new CountDown();
+				state = State::START;
+				gTime = 0;
+			}
+		}
+		break;
+	}
+	case START: 
+	{
+		//カウントダウン終了まで待つ
+		if (gTime < 3.0f) {
+			gTime += Time::DeltaTime();
+			if (gTime >= 3.0f) {
 				new Start();
 				Player* pl = FindGameObject<Player>();
 				pl->PlayStart();
@@ -48,7 +64,8 @@ void PlayScene::Update()
 		if (gTime < 1.0f) {
 			gTime += Time::DeltaTime();
 			if (gTime >= 1.0f) {
-				//SceneManager::ChangeScene("TITLE");
+				Fade* fade = FindGameObject<Fade>();
+				fade->FadeOut(2.0);
 				state = State::END;
 			}
 		}
@@ -56,7 +73,10 @@ void PlayScene::Update()
 	}
 	case END: 
 	{
-		SceneManager::ChangeScene("TITLE");
+		Fade* fade = FindGameObject<Fade>();
+		if (fade->IsFinish()) {
+			SceneManager::ChangeScene("TITLE");
+		}
 		break;
 	}
 	}
@@ -71,6 +91,14 @@ void PlayScene::Draw()
 	DrawString(0, 0, "PLAY SCENE", COL_WHITE);
 	DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
 	DrawString(100, 400, "Push [T]Key To Title", COL_WHITE);
+}
+
+void PlayScene::OnStart()
+{
+	if (state == State::COUNT) {
+		state = State::CLEAR;
+		gTime = 0;
+	}
 }
 
 void PlayScene::OnClear()

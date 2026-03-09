@@ -12,12 +12,14 @@ public:
 	void Update() override;
 	void Draw() override;
 
+	void OnStart();
 	void OnClear();
 	void OnOver();
 private:
 	float gTime;
 	enum State {
-		READY,
+		COUNT,
+		START,
 		INPLAY,
 		CLEAR,
 		OVER,
