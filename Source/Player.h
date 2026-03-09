@@ -21,4 +21,10 @@ private:
 	void UpdateReady();
 	void UpdateInplay();
 	void UpdateOver();
+
+	//スタミナ
+	float stamina;
+	//スタミナ切れ
+	bool isExhausted;
+	void PlayerExhausted();
 };

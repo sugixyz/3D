@@ -6,7 +6,7 @@
 #include "PlayScene.h"
 
 namespace {
-	const float DIST_LENGTH = 20.0f;
+	const float DIST_LENGTH = 40.0f;
 }
 
 Enemy::Enemy()

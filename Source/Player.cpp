@@ -4,6 +4,10 @@
 #include<cmath>
 #include "PlayScene.h"
 
+namespace {
+    const int STAMINA_MAX = 100;
+}
+
 Player::Player()
 {
 	SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
@@ -16,6 +20,9 @@ Player::Player()
 	velocity = VECTOR3(0, 0, 0);
 	isJump = false;
     state = READY;
+
+    stamina = STAMINA_MAX;
+    isExhausted = false;
 }
 
 Player::~Player()
@@ -71,8 +78,24 @@ void Player::UpdateInplay()
     VECTOR3 moveDir = VECTOR3(0, 0, 0);
     if (CheckHitKey(KEY_INPUT_W)) {
         moveDir.z = 10.0f;
-        if (CheckHitKey(KEY_INPUT_LSHIFT)) moveDir.z *= 2;
     }
+    //ダッシュ
+    if (CheckHitKey(KEY_INPUT_LSHIFT) && !isExhausted) {
+        moveDir.z *= 2;
+        //５０秒でスタミナ切れ
+        stamina -= Time::DeltaTime() * 2;
+        if (stamina <= 0) {
+            stamina = 0.0;
+            isExhausted = true;
+        }
+    }
+    //スタミナ切れ
+    if (isExhausted) {
+        PlayerExhausted();
+    }
+    //スタミナ回復 100秒で満タン
+    stamina += Time::DeltaTime();
+
     // プレイヤーの向きに合わせて回転させる
     moveDir = moveDir * MGetRotY(rotation.y);
 
@@ -117,4 +140,11 @@ void Player::UpdateInplay()
 
 void Player::UpdateOver()
 {
+}
+
+void Player::PlayerExhausted()
+{
+    if (stamina > 50) {
+        isExhausted = false;
+    }
 }

@@ -88,9 +88,7 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-	DrawString(0, 0, "PLAY SCENE", COL_WHITE);
 	DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
-	DrawString(100, 400, "Push [T]Key To Title", COL_WHITE);
 }
 
 void PlayScene::OnStart()
