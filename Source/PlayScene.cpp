@@ -8,6 +8,8 @@ PlayScene::PlayScene()
 	new Player();
 	new Enemy();
 	new Stage();
+	state = State::READY;
+	gTime = 0;
 }
 
 PlayScene::~PlayScene()

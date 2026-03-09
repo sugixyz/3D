@@ -1,4 +1,5 @@
 #include "Object3D.h"
+#include"Stage.h"
 
 Object3D::Object3D()
 {

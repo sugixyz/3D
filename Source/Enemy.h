@@ -9,4 +9,5 @@ public:
 	void Update() override;
 private:
 	VECTOR3 velocity;
+	float VectorLength(const VECTOR3& a, const VECTOR3& b);
 };

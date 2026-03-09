@@ -7,7 +7,10 @@ public:
 	Player();
 	~Player();
 	void Update() override;
+	bool IsJump() { return isJump; }
 private:
 	VECTOR3 velocity;
 	bool isJump;
+	//VECTOR3 camRotation;
+	//VECTOR3 mousePos;
 };

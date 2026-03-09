@@ -14,6 +14,8 @@ Player::Player()
 	rotation = VECTOR3(0, 0, 0);
 	velocity = VECTOR3(0, 0, 0);
 	isJump = false;
+    //camRotation = VECTOR3(0, 0, 0);
+    //mousePos = VECTOR3(0, 0, 0);
 }
 
 Player::~Player()
@@ -65,6 +67,8 @@ void Player::Update()
     }
 
     // 7. ÉJÉÅÉâçXêV
-    VECTOR3 camPos = VECTOR3(0, 350, -500) * MGetRotY(rotation.y) + position;
+    VECTOR3 camPos;
+    if(CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
+    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
     SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
 }
