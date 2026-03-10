@@ -7,10 +7,10 @@ public:
 	Goblin();
 	~Goblin();
 	void Update() override;
+	void Attack() override;
 	void PlayStart() { state = State::INPLAY; }
 	void KnockBack();
 private:
-	VECTOR3 velocity;
 	enum State {
 		READY,
 		INPLAY,

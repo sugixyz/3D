@@ -11,7 +11,7 @@ namespace {
 
 Goblin::Goblin()
 {
-	SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
+	//SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
 	hModel = MV1LoadModel("data/models/Character/Goblin/Goblin.mv1");
 	assert(hModel > 0);
 	int root = MV1SearchFrame(hModel, "root");
@@ -126,6 +126,11 @@ void Goblin::UpdateStan()
 			vel = -20.0f;
 		}
 	}
+}
+
+void Goblin::Attack()
+{
+
 }
 
 void Goblin::KnockBack()

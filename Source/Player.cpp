@@ -4,6 +4,7 @@
 #include<cmath>
 #include "PlayScene.h"
 #include"Goblin.h"
+#include"PlayerSword.h"
 
 namespace {
     const float STAMINA_MAX = 10.0f;
@@ -123,9 +124,9 @@ void Player::UpdateInplay()
     }
     if (isAttack) {
         static float timer = 0;
-        if (timer < 0.5f) {
+        if (timer < 0.8f) {
             timer += Time::DeltaTime();
-            if (timer >= 0.5f) {
+            if (timer >= 0.8f) {
                 isAttack = false;
                 timer = 0;
             }
@@ -180,6 +181,8 @@ void Player::UpdateOver()
 
 void Player::Attack()
 {
+    //剣の表示 (見た目だけ)
+    new PlayerSword();
     //全敵を検索
     auto goblins = FindGameObjects<Goblin>();
     for (Goblin* gb : goblins) {
@@ -195,7 +198,7 @@ void Player::Attack()
         //内積
         float dot = VDot(forward, toEnemy);
         // 1.0 なら真ん前、0 なら真横、-1.0 なら真後ろ
-        //とりあえず45度
+        //前方180度
         if (length < ATTACK_LENGTH && dot > 0.0f) { 
             gb->TakeDamage(damage);
             gb->KnockBack();

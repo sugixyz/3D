@@ -8,6 +8,7 @@
 #include"Over.h"
 #include"Fade.h"
 #include"CountDown.h"
+#include"PlayerSword.h"
 
 PlayScene::PlayScene()
 {
@@ -50,6 +51,7 @@ void PlayScene::Update()
 				pl->PlayStart();
 				Goblin* gb = FindGameObject<Goblin>();
 				gb->PlayStart();
+				//new PlayerSword();
 				state = State::INPLAY;
 				gTime = 0;
 			}
