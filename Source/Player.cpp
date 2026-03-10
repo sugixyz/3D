@@ -87,9 +87,12 @@ void Player::UpdateInplay()
     if (CheckHitKey(KEY_INPUT_W)) {
         moveDir.z = 10.0f;
     }
+    else if (CheckHitKey(KEY_INPUT_S)) {
+        moveDir.z = -10.0f;
+    }
     //ダッシュ
     if (CheckHitKey(KEY_INPUT_LSHIFT) && !isExhausted) {
-        moveDir.z += 5;
+        moveDir.z *= 1.5f;
         //５０秒でスタミナ切れ
         stamina -= Time::DeltaTime() * 2;
         if (stamina <= 0) {
@@ -104,7 +107,7 @@ void Player::UpdateInplay()
     }
     //スタミナ切れ
     if (isExhausted) {
-        moveDir.z -= 1;
+        moveDir.z *= 0.8;
         if (stamina > (STAMINA_MAX / 2)) {
             isExhausted = false;
         }
@@ -193,7 +196,7 @@ void Player::Attack()
         float dot = VDot(forward, toEnemy);
         // 1.0 なら真ん前、0 なら真横、-1.0 なら真後ろ
         //とりあえず45度
-        if (length < ATTACK_LENGTH && dot > 0.7f) { 
+        if (length < ATTACK_LENGTH && dot > 0.0f) { 
             gb->TakeDamage(damage);
         }
     }
