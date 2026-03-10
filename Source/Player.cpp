@@ -115,7 +115,7 @@ void Player::UpdateInplay()
     }
 
     //HPä«óù
-    if (isDead())DestroyMe();
+    if (isDead())GetScene<PlayScene>()->OnOver();
 
     //çUåÇ
     if (CheckHitKey(KEY_INPUT_RETURN) && !isAttack) {

@@ -6,7 +6,8 @@
 #include "PlayScene.h"
 
 namespace {
-	const float DIST_LENGTH = 40.0f;
+	const float ATTACK_LENGTH = 150.0f;
+	const int ATTACK_DAMAGE = 30;
 }
 
 Goblin::Goblin()
@@ -23,6 +24,8 @@ Goblin::Goblin()
 
 	HP_MAX = 80.0f;
 	HP = HP_MAX;
+
+	damage = ATTACK_DAMAGE;
 }
 
 Goblin::~Goblin()
@@ -61,6 +64,7 @@ void Goblin::UpdateInplay()
 	moveDir = moveDir * MGetRotY(rotation.y);
 	velocity.x = moveDir.x;
 	velocity.z = moveDir.z;
+	if (isAttack) { velocity.x = 0; velocity.z = 0; }
 	velocity.y -= 0.5f;
 	position += velocity;
 
@@ -79,11 +83,22 @@ void Goblin::UpdateInplay()
 		}
 	}
 
-	//プレイヤーとの当たり判定
 	//接触
 	float length = VSize(position - p->GetPos());
-	if (length < DIST_LENGTH) {
-
+	if (length < ATTACK_LENGTH && !isAttack) {
+		isAttack = true;
+	}
+	//2秒で攻撃終了
+	if (isAttack) {
+		static float timer = 0;
+		if(timer < 1.0f){
+			timer += Time::DeltaTime();
+			if (timer >= 1.0f) {
+				Attack();
+				isAttack = false;
+				timer = 0;
+			}
+		}
 	}
 }
 
@@ -130,7 +145,23 @@ void Goblin::UpdateStan()
 
 void Goblin::Attack()
 {
-
+	Player* p = FindGameObject<Player>();
+	//プレイヤーを取得
+	VECTOR3 pPos = p->GetPos();
+	float length = VSize(position - pPos);
+	//向き
+	VECTOR3 forward = VGet(sinf(rotation.y), 0, cosf(rotation.y));
+	//敵からプレイヤーへのベクトル
+	VECTOR3 toPlayer = VSub(pPos, position);
+	toPlayer.y = 0; // 高さは無視
+	toPlayer = VNorm(toPlayer);
+	//内積
+	float dot = VDot(forward, toPlayer);
+	// 1.0 なら真ん前、0 なら真横、-1.0 なら真後ろ
+	//前方30度（左右15度）
+	if (length < ATTACK_LENGTH && dot > 0.866f) {
+		p->TakeDamage(damage);
+	}
 }
 
 void Goblin::KnockBack()
