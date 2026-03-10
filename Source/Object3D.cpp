@@ -4,6 +4,8 @@
 Object3D::Object3D()
 {
 	hModel = -1;
+	HP = -1;
+	stamina = -1;
 }
 
 Object3D::~Object3D()
@@ -24,4 +26,19 @@ void Object3D::Draw()
 	MATRIX mat = mRotY * mTrans; // ‰ñ‚µ‚Ä‚©‚çˆÚ“®
 	MV1SetMatrix(hModel, mat);
 	MV1DrawModel(hModel);
+	if (stamina > -1)DrawStamina();
+	DrawHP();
+}
+
+void Object3D::Attack()
+{
+}
+
+void Object3D::TakeDamage(int damage)
+{
+	HP -= damage;
+}
+
+void Object3D::DrawHP()
+{
 }

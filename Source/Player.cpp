@@ -6,6 +6,7 @@
 
 namespace {
     const float STAMINA_MAX = 10.0f;
+    const float HP_MAX = 100.0f;
 }
 
 Player::Player()
@@ -23,6 +24,8 @@ Player::Player()
 
     stamina = STAMINA_MAX;
     isExhausted = false;
+
+    HP = 100;
 }
 
 Player::~Player()
@@ -77,7 +80,7 @@ void Player::UpdateInplay()
 
     VECTOR3 moveDir = VECTOR3(0, 0, 0);
     if (CheckHitKey(KEY_INPUT_W)) {
-        moveDir.z = 9.0f;
+        moveDir.z = 10.0f;
     }
     //ダッシュ
     if (CheckHitKey(KEY_INPUT_LSHIFT) && !isExhausted) {
@@ -101,6 +104,9 @@ void Player::UpdateInplay()
             isExhausted = false;
         }
     }
+
+    //HP管理
+    if (isDead())DestroyMe();
 
     // プレイヤーの向きに合わせて回転させる
     moveDir = moveDir * MGetRotY(rotation.y);
@@ -148,31 +154,13 @@ void Player::UpdateOver()
 {
 }
 
-
-void Player::Draw()
-{
-    switch (state)
-    {
-    case INPLAY:
-    {
-        MATRIX mRotY = MGetRotY(rotation.y);
-        MATRIX mTrans = MGetTranslate(position);
-        MATRIX mat = mRotY * mTrans; // 回してから移動
-        MV1SetMatrix(hModel, mat);
-        MV1DrawModel(hModel);
-        DrawStamina();
-        break;
-    }
-    }
-}
-
-void Player::DrawStamina()
+void Object3D::DrawStamina()
 {
     unsigned int color = COL_GREEN;
     if (stamina <= (STAMINA_MAX / 4))color = COL_RED;
     else if (stamina <= (STAMINA_MAX / 2))color = COL_YELLOW;
     //左上にスタミナゲージ表示
-    float x, y, rate,w,h;
+    float x, y, rate, w, h;
     x = 10;
     y = 10;
     w = 200;

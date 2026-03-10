@@ -12,7 +12,6 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	void OnStart();
 	void OnClear();
 	void OnOver();
 private:

@@ -1,11 +1,11 @@
 #pragma once
 #include "Object3D.h"
 
-class Enemy : public Object3D
+class Goblin : public Object3D
 {
 public:
-	Enemy();
-	~Enemy();
+	Goblin();
+	~Goblin();
 	void Update() override;
 	void PlayStart() { state = State::INPLAY; }
 private:

@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "Goblin.h"
 #include <assert.h>
 #include "Stage.h"
 #include"Player.h"
@@ -9,7 +9,7 @@ namespace {
 	const float DIST_LENGTH = 40.0f;
 }
 
-Enemy::Enemy()
+Goblin::Goblin()
 {
 	SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
 	hModel = MV1LoadModel("data/models/Character/Goblin/Goblin.mv1");
@@ -20,13 +20,15 @@ Enemy::Enemy()
 	rotation = VECTOR3(0, 0, 0);
 	velocity = VECTOR3(0, 0, 0);
 	state = State::READY;
+
+	HP = 100;
 }
 
-Enemy::~Enemy()
+Goblin::~Goblin()
 {
 }
 
-void Enemy::Update()
+void Goblin::Update()
 {
 	switch (state) {
 	case INPLAY:
@@ -42,11 +44,11 @@ void Enemy::Update()
 	}
 }
 
-void Enemy::UpdateReady()
+void Goblin::UpdateReady()
 {
 }
 
-void Enemy::UpdateInplay()
+void Goblin::UpdateInplay()
 {
 	//プレイヤーとの距離でラジアンをとる
 	Player* p = FindGameObject<Player>();
@@ -57,7 +59,7 @@ void Enemy::UpdateInplay()
 
 	VECTOR3 moveDir = VECTOR3(0, 0, 0);
 	//if (velocity.y >= 0.0f)
-	moveDir.z = 10.0f;
+	moveDir.z = 6.0f;
 
 	moveDir = moveDir * MGetRotY(rotation.y);
 	velocity.x = moveDir.x;
@@ -88,15 +90,15 @@ void Enemy::UpdateInplay()
 	}
 }
 
-void Enemy::UpdateOver()
+void Goblin::UpdateOver()
 {
 }
 
-float Enemy::VectorLength(const VECTOR3& player, const VECTOR3& enemy)
+float Goblin::VectorLength(const VECTOR3& player, const VECTOR3& Goblin)
 {
 	float dx, dz,dist;
-	dx = enemy.x - player.x;
-	dz = enemy.z - player.z;
+	dx = Goblin.x - player.x;
+	dz = Goblin.z - player.z;
 	dist = sqrt((dx * dx) + (dz * dz));
 	return dist;
 }

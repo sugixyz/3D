@@ -7,7 +7,6 @@ public:
 	Player();
 	~Player();
 	void Update() override;
-	void Draw() override;
 	bool IsJump() { return isJump; }
 	void PlayStart() { state = State::INPLAY; }
 private:
@@ -23,9 +22,6 @@ private:
 	void UpdateInplay();
 	void UpdateOver();
 
-	//スタミナ
-	float stamina;
 	//スタミナ切れ
 	bool isExhausted;
-	void DrawStamina();
 };

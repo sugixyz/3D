@@ -1,9 +1,11 @@
 #include "PlayScene.h"
 #include "Player.h"
-#include "Enemy.h"
+#include "Goblin.h"
 #include "Stage.h"
 #include"DxLib.h"
 #include"Start.h"
+#include"Clear.h"
+#include"Over.h"
 #include"Fade.h"
 #include"CountDown.h"
 
@@ -11,7 +13,7 @@ PlayScene::PlayScene()
 {
 	Fade* fade = new Fade();
 	new Player();
-	new Enemy();
+	new Goblin();
 	new Stage();
 	state = State::COUNT;
 	gTime = 0;
@@ -46,8 +48,8 @@ void PlayScene::Update()
 				new Start();
 				Player* pl = FindGameObject<Player>();
 				pl->PlayStart();
-				Enemy* en = FindGameObject<Enemy>();
-				en->PlayStart();
+				Goblin* gb = FindGameObject<Goblin>();
+				gb->PlayStart();
 				state = State::INPLAY;
 				gTime = 0;
 			}
@@ -56,6 +58,14 @@ void PlayScene::Update()
 	}
 	case INPLAY: 
 	{
+		if (gTime < 5.0f) {
+			gTime += Time::DeltaTime();
+			if (gTime >= 5.0f) {
+				Goblin* e = new Goblin();
+				e->PlayStart();
+				gTime = 0;
+			}
+		}
 		break;
 	}
 	case OVER:
@@ -91,18 +101,11 @@ void PlayScene::Draw()
 	//DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
 }
 
-void PlayScene::OnStart()
-{
-	if (state == State::COUNT) {
-		state = State::CLEAR;
-		gTime = 0;
-	}
-}
-
 void PlayScene::OnClear()
 {
 	if (state == State::INPLAY) {
 		state = State::CLEAR;
+		new Clear();
 		gTime = 0;
 	}
 }
@@ -111,6 +114,7 @@ void PlayScene::OnOver() {
 
 	if (state == State::INPLAY) {
 		state = State::OVER;
+		new Over();
 		gTime = 0;
 	}
 }
