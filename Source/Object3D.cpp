@@ -7,6 +7,8 @@ Object3D::Object3D()
 	hModel = -1;
 	HP = -1;
 	stamina = -1;
+	damage = -1;
+	isAttack = false;
 }
 
 Object3D::~Object3D()

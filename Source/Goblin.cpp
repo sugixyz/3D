@@ -68,6 +68,9 @@ void Goblin::UpdateInplay()
 	velocity.y -= 0.5f;
 	position += velocity;
 
+	//HP管理
+	if (isDead())DestroyMe();
+
 	//地面との当たり判定
 	Stage* stage = FindGameObject<Stage>();
 	VECTOR3 hitPos;
@@ -81,25 +84,13 @@ void Goblin::UpdateInplay()
 	}
 
 	//プレイヤーとの当たり判定
-	//一定の高さの差があったらスルー
-	if (abs(p->GetPos().y - position.y) >= 20.0f)return;
 	//接触
-	if (VectorLength(p->GetPos(), position) < DIST_LENGTH) {
-		//SceneManager::ChangeScene("TITLE");
-		GetScene<PlayScene>()->OnOver();
-		state = State::OVER;
+	float length = VSize(position - p->GetPos());
+	if (length < DIST_LENGTH) {
+
 	}
 }
 
 void Goblin::UpdateOver()
 {
-}
-
-float Goblin::VectorLength(const VECTOR3& player, const VECTOR3& Goblin)
-{
-	float dx, dz,dist;
-	dx = Goblin.x - player.x;
-	dz = Goblin.z - player.z;
-	dist = sqrt((dx * dx) + (dz * dz));
-	return dist;
 }

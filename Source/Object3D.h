@@ -26,4 +26,7 @@ protected:
 	float HP;
 	float HP_MAX;
 	void DrawHP();
+
+	int damage;
+	bool isAttack;
 };

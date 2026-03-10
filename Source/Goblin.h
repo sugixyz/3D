@@ -19,5 +19,4 @@ private:
 	void UpdateReady();
 	void UpdateInplay();
 	void UpdateOver();
-	float VectorLength(const VECTOR3& a, const VECTOR3& b);
 };

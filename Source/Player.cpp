@@ -3,9 +3,12 @@
 #include "Stage.h"
 #include<cmath>
 #include "PlayScene.h"
+#include"Goblin.h"
 
 namespace {
     const float STAMINA_MAX = 10.0f;
+    const float ATTACK_LENGTH = 200;
+    const int ATTACK_DAMAGE = 50;
 }
 
 Player::Player()
@@ -26,6 +29,8 @@ Player::Player()
 
     HP_MAX = 100.0f;
     HP = HP_MAX;
+
+    damage = ATTACK_DAMAGE;
 }
 
 Player::~Player()
@@ -108,6 +113,22 @@ void Player::UpdateInplay()
     //HP管理
     if (isDead())DestroyMe();
 
+    //攻撃
+    if (CheckHitKey(KEY_INPUT_RETURN) && !isAttack) {
+        Attack();
+        isAttack = true;
+    }
+    if (isAttack) {
+        static float timer = 0;
+        if (timer < 0.5f) {
+            timer += Time::DeltaTime();
+            if (timer >= 0.5f) {
+                isAttack = false;
+                timer = 0;
+            }
+        }
+    }
+
     // プレイヤーの向きに合わせて回転させる
     moveDir = moveDir * MGetRotY(rotation.y);
 
@@ -156,6 +177,26 @@ void Player::UpdateOver()
 
 void Player::Attack()
 {
+    //全敵を検索
+    auto goblins = FindGameObjects<Goblin>();
+    for (Goblin* gb : goblins) {
+        //距離
+        VECTOR3 gbPos = gb->GetPos();
+        float length = VSize(position - gbPos);
+        //向き（プレイヤーの前にいるか）
+        VECTOR3 forward = VGet(sinf(rotation.y), 0, cosf(rotation.y));
+        //プレイヤーから敵へのベクトル
+        VECTOR3 toEnemy = VSub(gbPos, position);
+        toEnemy.y = 0; // 高さは無視
+        toEnemy = VNorm(toEnemy);
+        //内積
+        float dot = VDot(forward, toEnemy);
+        // 1.0 なら真ん前、0 なら真横、-1.0 なら真後ろ
+        //とりあえず45度
+        if (length < ATTACK_LENGTH && dot > 0.7f) { 
+            gb->TakeDamage(damage);
+        }
+    }
 }
 
 
