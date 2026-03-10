@@ -65,7 +65,7 @@ void PlayScene::Update()
 			gTime += Time::DeltaTime();
 			if (gTime >= 1.0f) {
 				Fade* fade = FindGameObject<Fade>();
-				fade->FadeOut(2.0);
+				fade->FadeOut(1.5);
 				state = State::END;
 			}
 		}
@@ -88,7 +88,7 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-	DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
+	//DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
 }
 
 void PlayScene::OnStart()

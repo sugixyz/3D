@@ -5,7 +5,7 @@
 #include "PlayScene.h"
 
 namespace {
-    const int STAMINA_MAX = 100;
+    const float STAMINA_MAX = 10.0f;
 }
 
 Player::Player()
@@ -77,11 +77,11 @@ void Player::UpdateInplay()
 
     VECTOR3 moveDir = VECTOR3(0, 0, 0);
     if (CheckHitKey(KEY_INPUT_W)) {
-        moveDir.z = 10.0f;
+        moveDir.z = 9.0f;
     }
     //ダッシュ
     if (CheckHitKey(KEY_INPUT_LSHIFT) && !isExhausted) {
-        moveDir.z *= 2;
+        moveDir.z += 5;
         //５０秒でスタミナ切れ
         stamina -= Time::DeltaTime() * 2;
         if (stamina <= 0) {
@@ -89,12 +89,18 @@ void Player::UpdateInplay()
             isExhausted = true;
         }
     }
+    else {
+        //スタミナ回復 100秒で満タン
+        stamina += Time::DeltaTime();
+        if (stamina > STAMINA_MAX)stamina = STAMINA_MAX;
+    }
     //スタミナ切れ
     if (isExhausted) {
-        PlayerExhausted();
+        moveDir.z -= 1;
+        if (stamina > (STAMINA_MAX / 2)) {
+            isExhausted = false;
+        }
     }
-    //スタミナ回復 100秒で満タン
-    stamina += Time::DeltaTime();
 
     // プレイヤーの向きに合わせて回転させる
     moveDir = moveDir * MGetRotY(rotation.y);
@@ -142,9 +148,36 @@ void Player::UpdateOver()
 {
 }
 
-void Player::PlayerExhausted()
+
+void Player::Draw()
 {
-    if (stamina > 50) {
-        isExhausted = false;
+    switch (state)
+    {
+    case INPLAY:
+    {
+        MATRIX mRotY = MGetRotY(rotation.y);
+        MATRIX mTrans = MGetTranslate(position);
+        MATRIX mat = mRotY * mTrans; // 回してから移動
+        MV1SetMatrix(hModel, mat);
+        MV1DrawModel(hModel);
+        DrawStamina();
+        break;
     }
+    }
+}
+
+void Player::DrawStamina()
+{
+    unsigned int color = COL_GREEN;
+    if (stamina <= (STAMINA_MAX / 4))color = COL_RED;
+    else if (stamina <= (STAMINA_MAX / 2))color = COL_YELLOW;
+    //左上にスタミナゲージ表示
+    float x, y, rate,w,h;
+    x = 10;
+    y = 10;
+    w = 200;
+    h = 20;
+    rate = stamina / STAMINA_MAX;
+    DrawBox(x, y, x + (w * rate), y + h, color, TRUE);
+    DrawBox(x, y, x + w, y + h, COL_WHITE, FALSE);
 }

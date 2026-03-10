@@ -231,7 +231,7 @@ namespace DxLib {
 		OutputDebugString(s);
 	}
 
-	static const unsigned int COL_BLACK = GetColor(255, 0, 0);
+	static const unsigned int COL_BLACK = GetColor(0, 0, 0);
 	static const unsigned int COL_RED = GetColor(255, 0, 0);
 	static const unsigned int COL_GREEN = GetColor(0, 255, 0);
 	static const unsigned int COL_BLUE = GetColor(0, 0, 255);
