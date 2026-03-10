@@ -118,10 +118,12 @@ void Player::UpdateInplay()
     if (isDead())GetScene<PlayScene>()->OnOver();
 
     //UŒ‚
+    //ƒL[‚ğ‰Ÿ‚·‚Æ‘¦UŒ‚
     if (CheckHitKey(KEY_INPUT_RETURN) && !isAttack) {
         Attack();
         isAttack = true;
     }
+    //0.8•b‚ÅÄ“xUŒ‚‰Â”\
     if (isAttack) {
         static float timer = 0;
         if (timer < 0.8f) {

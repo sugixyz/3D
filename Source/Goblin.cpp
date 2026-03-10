@@ -90,13 +90,19 @@ void Goblin::UpdateInplay()
 		new GoblinSword(position, rotation);
 		isAttack = true;
 	}
-	//1•b‚ÅUŒ‚I—¹
+	//0.5•b‚ÅUŒ‚
 	if (isAttack) {
 		static float timer = 0;
-		if(timer < 1.0f){
+		if (timer < 0.5) {
+			timer += Time::DeltaTime();
+			if (timer >= 0.5f) {
+				Attack();
+			}
+		}
+		//1•b‚ÅÄ“xUŒ‚‰Â”\
+		else if(timer < 1.0f){
 			timer += Time::DeltaTime();
 			if (timer >= 1.0f) {
-				Attack();
 				isAttack = false;
 				timer = 0;
 			}

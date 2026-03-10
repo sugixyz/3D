@@ -15,7 +15,7 @@ PlayerSword::PlayerSword()
 	velocity = VECTOR3(0, 0, 0);
 
 	startTimer = 0.0f;
-	endTimer = 0.5f;
+	endTimer = 0.4f;
 	rate = 0.0f;
 }
 
