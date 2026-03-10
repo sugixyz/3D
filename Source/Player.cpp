@@ -198,6 +198,7 @@ void Player::Attack()
         //‚Æ‚è‚ ‚¦‚¸45“x
         if (length < ATTACK_LENGTH && dot > 0.0f) { 
             gb->TakeDamage(damage);
+            gb->KnockBack();
         }
     }
 }

@@ -8,15 +8,15 @@ public:
 	~Goblin();
 	void Update() override;
 	void PlayStart() { state = State::INPLAY; }
+	void KnockBack();
 private:
 	VECTOR3 velocity;
 	enum State {
 		READY,
 		INPLAY,
-		OVER
+		STAN
 	};
 	State state;
-	void UpdateReady();
 	void UpdateInplay();
-	void UpdateOver();
+	void UpdateStan();
 };

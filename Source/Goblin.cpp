@@ -37,16 +37,12 @@ void Goblin::Update()
 		UpdateInplay();
 		break;
 	}
-	case OVER:
+	case STAN:
 	{
-		UpdateOver();
+		UpdateStan();
 		break;
 	}
 	}
-}
-
-void Goblin::UpdateReady()
-{
 }
 
 void Goblin::UpdateInplay()
@@ -91,6 +87,50 @@ void Goblin::UpdateInplay()
 	}
 }
 
-void Goblin::UpdateOver()
+void Goblin::UpdateStan()
 {
+	VECTOR3 moveDir = VECTOR3(0, 0, 0);
+	//後ろに吹き飛ばす
+	static float vel = -20.0f;
+	vel *= 0.9;
+	moveDir.z = vel;
+
+	moveDir = moveDir * MGetRotY(rotation.y);
+	velocity.x = moveDir.x;
+	velocity.z = moveDir.z;
+	velocity.y -= 0.5f;
+	position += velocity;
+
+	//HP管理
+	if (isDead())DestroyMe();
+
+	//地面との当たり判定
+	Stage* stage = FindGameObject<Stage>();
+	VECTOR3 hitPos;
+	// 足元付近に地面があるかチェック
+	if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -100, 0), &hitPos)) {
+		// 「落下中」かつ「地面より下にいる」時だけ着地させる
+		if (velocity.y <= 0 && position.y <= hitPos.y) {
+			position.y = hitPos.y;
+			velocity.y = 0.0f;
+		}
+	}
+
+	static float timer = 0;
+	if (timer < 1.0f)
+	{
+		timer += Time::DeltaTime();
+		if (timer >= 1.0f) {
+			state = State::INPLAY;
+			timer = 0.0f;
+			vel = -20.0f;
+		}
+	}
+}
+
+void Goblin::KnockBack()
+{
+	//少し上に飛ばす
+	velocity.y += 10.0f;
+	state = State::STAN;
 }
