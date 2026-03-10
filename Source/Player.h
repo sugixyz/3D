@@ -11,7 +11,6 @@ public:
 	bool IsJump() { return isJump; }
 	void PlayStart() { state = State::INPLAY; }
 
-	VECTOR3 GetRotation() { return rotation; }
 private:
 	bool isJump;
 	enum State {

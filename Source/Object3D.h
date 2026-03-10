@@ -8,6 +8,7 @@ public:
 	virtual ~Object3D();
 	virtual void Draw() override;
 
+	VECTOR3 GetRotation() { return rotation; }
 	VECTOR3 GetPos() { return position; }
 	bool isDead() { return HP <= 0; }
 	virtual void Attack();

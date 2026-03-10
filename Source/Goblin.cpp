@@ -4,6 +4,7 @@
 #include"Player.h"
 #include<cmath>
 #include "PlayScene.h"
+#include"GoblinSword.h"
 
 namespace {
 	const float ATTACK_LENGTH = 150.0f;
@@ -86,9 +87,10 @@ void Goblin::UpdateInplay()
 	//ÚG
 	float length = VSize(position - p->GetPos());
 	if (length < ATTACK_LENGTH && !isAttack) {
+		new GoblinSword(position, rotation);
 		isAttack = true;
 	}
-	//2•b‚ÅUŒ‚I—¹
+	//1•b‚ÅUŒ‚I—¹
 	if (isAttack) {
 		static float timer = 0;
 		if(timer < 1.0f){
