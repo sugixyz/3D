@@ -12,9 +12,9 @@
 PlayScene::PlayScene()
 {
 	Fade* fade = new Fade();
+	new Stage();
 	new Player();
 	new Goblin();
-	new Stage();
 	state = State::COUNT;
 	gTime = 0;
 	fade->FadeIn(1.0);

@@ -21,7 +21,8 @@ Goblin::Goblin()
 	velocity = VECTOR3(0, 0, 0);
 	state = State::READY;
 
-	HP = 100;
+	HP_MAX = 80.0f;
+	HP = HP_MAX;
 }
 
 Goblin::~Goblin()

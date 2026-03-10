@@ -7,6 +7,7 @@ public:
 	Player();
 	~Player();
 	void Update() override;
+	void Attack() override;
 	bool IsJump() { return isJump; }
 	void PlayStart() { state = State::INPLAY; }
 private:

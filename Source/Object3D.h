@@ -11,7 +11,7 @@ public:
 	VECTOR3 GetPos() { return position; }
 	bool isDead() { return HP <= 0; }
 	virtual void Attack();
-	virtual void TakeDamage(int damage);
+	void TakeDamage(int damage);
 protected:
 	int hModel;
 	VECTOR3 position;
@@ -24,5 +24,6 @@ protected:
 
 	//HP
 	float HP;
+	float HP_MAX;
 	void DrawHP();
 };

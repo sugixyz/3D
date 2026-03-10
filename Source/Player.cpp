@@ -6,7 +6,6 @@
 
 namespace {
     const float STAMINA_MAX = 10.0f;
-    const float HP_MAX = 100.0f;
 }
 
 Player::Player()
@@ -25,7 +24,8 @@ Player::Player()
     stamina = STAMINA_MAX;
     isExhausted = false;
 
-    HP = 100;
+    HP_MAX = 100.0f;
+    HP = HP_MAX;
 }
 
 Player::~Player()
@@ -153,6 +153,11 @@ void Player::UpdateInplay()
 void Player::UpdateOver()
 {
 }
+
+void Player::Attack()
+{
+}
+
 
 void Object3D::DrawStamina()
 {
