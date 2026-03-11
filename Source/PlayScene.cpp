@@ -4,11 +4,10 @@
 #include "Stage.h"
 #include"DxLib.h"
 #include"Start.h"
-#include"Clear.h"
-#include"Over.h"
 #include"Fade.h"
 #include"CountDown.h"
 #include"PlayerSword.h"
+#include"Result.h"
 
 PlayScene::PlayScene()
 {
@@ -18,6 +17,7 @@ PlayScene::PlayScene()
 	new Goblin();
 	state = State::COUNT;
 	gTime = 0;
+	GoblinCounter = 0;
 	fade->FadeIn(1.0);
 }
 
@@ -70,12 +70,11 @@ void PlayScene::Update()
 		}
 		break;
 	}
-	case OVER:
-	case CLEAR:
+	case RESULT:
 	{
-		if (gTime < 1.0f) {
+		if (gTime < 3.0f) {
 			gTime += Time::DeltaTime();
-			if (gTime >= 1.0f) {
+			if (gTime >= 3.0f) {
 				Fade* fade = FindGameObject<Fade>();
 				fade->FadeOut(1.5);
 				state = State::END;
@@ -103,20 +102,11 @@ void PlayScene::Draw()
 	//DrawFormatString(0, 40, COL_WHITE, "SCENE_%d", state);
 }
 
-void PlayScene::OnClear()
+void PlayScene::OnResult()
 {
 	if (state == State::INPLAY) {
-		state = State::CLEAR;
-		new Clear();
-		gTime = 0;
-	}
-}
-
-void PlayScene::OnOver() {
-
-	if (state == State::INPLAY) {
-		state = State::OVER;
-		new Over();
+		state = State::RESULT;
+		new Result(GoblinCounter);
 		gTime = 0;
 	}
 }

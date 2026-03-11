@@ -115,7 +115,7 @@ void Player::UpdateInplay()
     }
 
     //HPŠÇ—
-    if (isDead())GetScene<PlayScene>()->OnOver();
+    if (isDead())GetScene<PlayScene>()->OnResult();
 
     //UŒ‚
     //ƒL[‚ğ‰Ÿ‚·‚Æ‘¦UŒ‚

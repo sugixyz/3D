@@ -12,17 +12,17 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	void OnClear();
-	void OnOver();
+	void AddGoblinCounter() { GoblinCounter += 1; }
+	void OnResult();
 private:
 	float gTime;
 	enum State {
 		COUNT,
 		START,
 		INPLAY,
-		CLEAR,
-		OVER,
+		RESULT,
 		END
 	};
 	State state;
+	int GoblinCounter;
 };
