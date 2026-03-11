@@ -37,5 +37,7 @@ void Result::Draw()
 	int size = GetFontSize();
 	SetFontSize(60);
 	DrawString(position.x, position.y, "RESULT", COL_RED);
+	DrawString(position.x, position.y+100, "ì¢î∞êî", COL_WHITE);
+	DrawFormatString(position.x - 100, position.y + 180, COL_WHITE, "ÉSÉuÉäÉìÅF%dëÃ", GoblinCounter);
 	SetFontSize(size);
 }

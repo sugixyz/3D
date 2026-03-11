@@ -125,7 +125,10 @@ void Goblin::UpdateStan()
 	position += velocity;
 
 	//HPŠÇ—
-	if (isDead())DestroyMe();
+	if (isDead()) {
+		DestroyMe();
+		GetScene<PlayScene>()->AddGoblinCounter();
+	}
 
 	//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
 	Stage* stage = FindGameObject<Stage>();
