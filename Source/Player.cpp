@@ -32,6 +32,23 @@ Player::Player()
     HP = HP_MAX;
 
     damage = ATTACK_DAMAGE;
+
+    //アニメーター
+    animator = new Animator(hModel);
+    //アニメーションの追加　番号　名前　ループするか
+    animator->AddFile(0, "data/models/Character/Player/Anim_Neutral.mv1", true);
+    animator->AddFile(1, "data/models/Character/Player/Anim_Run.mv1", true);
+    animator->AddFile(2, "data/models/Character/Player/Anim_Attack1.mv1", false);
+    animator->AddFile(3, "data/models/Character/Player/Anim_Attack2.mv1", false);
+    animator->AddFile(4, "data/models/Character/Player/Anim_Attack3.mv1", false);
+    animState = AnimState::NEUTRAL;
+    animator->Play((int)animState);
+
+    playState = sNormal;
+    stateInst = new PlayerNormal(this);
+
+    hWeapon = MV1LoadModel("data/models/Character/Weapon/Sabel/Sabel.mv1");
+    assert(hWeapon > 0);
 }
 
 Player::~Player()
@@ -59,6 +76,23 @@ void Player::Update()
  }
 }
 
+void Player::Draw()
+{
+    Object3D::Draw();
+
+    //サーベルの表示
+    int wp = MV1SearchFrame(hModel, "wp");
+    MATRIX m = MV1GetFrameLocalWorldMatrix(hModel, wp);
+    MV1SetMatrix(hWeapon, m);
+    MV1DrawModel(hWeapon);
+
+    //手の場所
+    VECTOR3 p = VECTOR3(0, 0, 0) * m;
+    //サーベルの先
+    VECTOR3 s = VECTOR3(0, -100, 0) * m;
+    DrawLine3D(s, p, COL_RED);
+}
+
 void Player::UpdateReady() {
     //地面との当たり判定
     Stage* stage = FindGameObject<Stage>();
@@ -81,77 +115,23 @@ void Player::UpdateReady() {
 
 void Player::UpdateInplay()
 {
-    if (CheckHitKey(KEY_INPUT_D)) rotation.y += 3.0f * DegToRad;
-    if (CheckHitKey(KEY_INPUT_A)) rotation.y -= 3.0f * DegToRad;
+    //アニメーションの再生
+    animator->Update();
 
-    VECTOR3 moveDir = VECTOR3(0, 0, 0);
-    if (CheckHitKey(KEY_INPUT_W)) {
-        moveDir.z = 10.0f;
-    }
-    else if (CheckHitKey(KEY_INPUT_S)) {
-        moveDir.z = -10.0f;
-    }
-    //ダッシュ
-    if (CheckHitKey(KEY_INPUT_LSHIFT) && !isExhausted) {
-        moveDir.z *= 1.5f;
-        //５０秒でスタミナ切れ
-        stamina -= Time::DeltaTime() * 2;
-        if (stamina <= 0) {
-            stamina = 0.0;
-            isExhausted = true;
-        }
-    }
-    else {
-        //スタミナ回復 100秒で満タン
-        stamina += Time::DeltaTime();
-        if (stamina > STAMINA_MAX)stamina = STAMINA_MAX;
-    }
-    //スタミナ切れ
-    if (isExhausted) {
-        moveDir.z *= 0.8;
-        if (stamina > (STAMINA_MAX / 2)) {
-            isExhausted = false;
-        }
-    }
+    stateInst->Update();
 
     //HP管理
     if (isDead())GetScene<PlayScene>()->OnResult();
 
-    //攻撃
-    //キーを押すと即攻撃
-    if (CheckHitKey(KEY_INPUT_RETURN) && !isAttack) {
-        Attack();
-        isAttack = true;
-    }
-    //0.8秒で再度攻撃可能
-    if (isAttack) {
-        static float timer = 0;
-        if (timer < 0.8f) {
-            timer += Time::DeltaTime();
-            if (timer >= 0.8f) {
-                isAttack = false;
-                timer = 0;
-            }
-        }
-    }
+    // カメラ更新
+    VECTOR3 camPos;
+    //Cキーでバックビュー
+    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
+    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
+    SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
 
-    // プレイヤーの向きに合わせて回転させる
-    moveDir = moveDir * MGetRotY(rotation.y);
-
-    //速度の更新
-    velocity.x = moveDir.x;
-    velocity.z = moveDir.z;
-
-    velocity.y -= 0.5f;
-
-    //ジャンプ入力 (接地中のみ)
-    if (CheckHitKey(KEY_INPUT_SPACE) && !isJump) {
-        velocity.y = 15.0f;
-        isJump = true;
-    }
-
-    //座標の更新 (ここで一気に移動)
-    position += velocity;
+    //アニメーションの適応
+    animator->Play((int)animState);
 
     //地面との当たり判定
     Stage* stage = FindGameObject<Stage>();
@@ -168,13 +148,6 @@ void Player::UpdateInplay()
     else {
         isJump = true; // 足元に地面がなければ空中
     }
-
-    // カメラ更新
-    VECTOR3 camPos;
-    //Cキーでバックビュー
-    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
-    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
-    SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
 }
 
 void Player::UpdateOver()
@@ -183,8 +156,6 @@ void Player::UpdateOver()
 
 void Player::Attack()
 {
-    //剣の表示 (見た目だけ)
-    new PlayerSword();
     //全敵を検索
     auto goblins = FindGameObjects<Goblin>();
     for (Goblin* gb : goblins) {
@@ -223,4 +194,182 @@ void Object3D::DrawStamina()
     rate = stamina / STAMINA_MAX;
     DrawBox(x, y, x + (w * rate), y + h, color, TRUE);
     DrawBox(x, y, x + w, y + h, COL_WHITE, FALSE);
+}
+
+void Player::ChangPlayState(PlayState st)
+{
+    if (playState != st)
+    {
+        if (stateInst != nullptr)
+        {
+            delete stateInst;
+        }
+        switch (st)
+        {
+            case PlayState::sNormal:
+            stateInst = new PlayerNormal(this);
+            break;
+        case PlayState::sAttack1:
+            stateInst = new PlayerAttack1(this);
+            break;
+        case PlayState::sAttack2:
+            stateInst = new PlayerAttack2(this);
+            break;
+        case PlayState::sAttack3:
+            stateInst = new PlayerAttack3(this);
+            break;
+        }
+        playState = st;
+    }
+}
+
+PlayerNormal::PlayerNormal(Player* parent)
+    : PlayerStateBase(parent)
+{
+}
+
+PlayerNormal::~PlayerNormal()
+{
+}
+
+void PlayerNormal::Update()
+{
+    if (CheckHitKey(KEY_INPUT_D)) pl->rotation.y += 3.0f * DegToRad;
+    if (CheckHitKey(KEY_INPUT_A)) pl->rotation.y -= 3.0f * DegToRad;
+
+    VECTOR3 moveDir = VECTOR3(0, 0, 0);
+    if (CheckHitKey(KEY_INPUT_W)) {
+        moveDir.z = 10.0f;
+        //走るアニメーションに
+        pl->animState = Player::AnimState::RUN;
+    }
+    else if (CheckHitKey(KEY_INPUT_S)) {
+        moveDir.z = -10.0f;
+        //走るアニメーションに
+        pl->animState = Player::AnimState::RUN;
+    }
+    else
+    {
+        //ニュートラルに
+        pl->animState = Player::AnimState::NEUTRAL;
+    }
+    //ダッシュ
+    if (CheckHitKey(KEY_INPUT_LSHIFT) && !pl->isExhausted) {
+        moveDir.z *= 1.5f;
+        //５０秒でスタミナ切れ
+        pl->stamina -= Time::DeltaTime() * 2;
+        if (pl->stamina <= 0) {
+            pl->stamina = 0.0;
+            pl->isExhausted = true;
+        }
+    }
+    else {
+        //スタミナ回復 100秒で満タン
+        pl->stamina += Time::DeltaTime();
+        if (pl->stamina > STAMINA_MAX)pl->stamina = STAMINA_MAX;
+    }
+    //スタミナ切れ
+    if (pl->isExhausted) {
+        moveDir.z *= 0.8;
+        if (pl->stamina > (STAMINA_MAX / 2)) {
+            pl->isExhausted = false;
+        }
+    }
+
+    // プレイヤーの向きに合わせて回転させる
+    moveDir = moveDir * MGetRotY(pl->rotation.y);
+
+    //速度の更新
+    pl->velocity.x = moveDir.x;
+    pl->velocity.z = moveDir.z;
+
+    pl->velocity.y -= 0.5f;
+
+    //ジャンプ入力 (接地中のみ)
+    if (CheckHitKey(KEY_INPUT_SPACE) && !pl->isJump) {
+        pl->velocity.y = 15.0f;
+        pl->isJump = true;
+    }
+
+    //座標の更新 (ここで一気に移動)
+    pl->position += pl->velocity;
+
+    //攻撃
+    //キーを押すと即攻撃
+    if (CheckHitKey(KEY_INPUT_RETURN)) {
+        pl->ChangPlayState(Player::PlayState::sAttack1);
+    }
+}
+
+PlayerAttack1::PlayerAttack1(Player* parent)
+    :PlayerStateBase(parent)
+{
+    pl->Attack();
+    pl->animState = Player::AnimState::ATTACK;
+}
+
+PlayerAttack1::~PlayerAttack1()
+{
+}
+
+void PlayerAttack1::Update()
+{
+    if (pl->animator->GetCurrentFrame() >= 8.5f)
+    {
+        if (CheckHitKey(KEY_INPUT_RETURN))
+        {
+            pl->ChangPlayState(Player::sAttack2);
+            return;
+        }
+    }
+    if (pl->animator->IsFinish())
+    {
+        pl->ChangPlayState(Player::sNormal);
+    }
+}
+
+PlayerAttack2::PlayerAttack2(Player* parent)
+    :PlayerStateBase(parent)
+{
+    pl->Attack();
+    pl->animState = Player::AnimState::ATTACK2;
+}
+
+PlayerAttack2::~PlayerAttack2()
+{
+}
+
+void PlayerAttack2::Update()
+{
+    if (pl->animator->GetCurrentFrame() >= 8.5f)
+    {
+        if (CheckHitKey(KEY_INPUT_RETURN))
+        {
+            pl->ChangPlayState(Player::sAttack3);
+            return;
+        }
+    }
+    if (pl->animator->IsFinish())
+    {
+        pl->ChangPlayState(Player::sNormal);
+    }
+}
+
+PlayerAttack3::PlayerAttack3(Player* parent)
+    :PlayerStateBase(parent)
+{
+    pl->Attack();
+    pl->animState = Player::AnimState::ATTACK3;
+}
+
+PlayerAttack3::~PlayerAttack3()
+{
+}
+
+void PlayerAttack3::Update()
+{
+    if (pl->animator->IsFinish())
+    {
+        pl->ChangPlayState(Player::sNormal);
+    }
 }
