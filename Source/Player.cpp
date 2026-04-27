@@ -290,8 +290,7 @@ void PlayerNormal::Update()
 
     //ジャンプ入力 (接地中のみ)
     if (CheckHitKey(KEY_INPUT_SPACE) && !pl->isJump) {
-        pl->velocity.y = 15.0f;
-        pl->isJump = true;
+        pl->ChangPlayState(Player::PlayState::sJump);
     }
 
     //座標の更新 (ここで一気に移動)
@@ -380,6 +379,8 @@ void PlayerAttack3::Update()
 PlayerJump::PlayerJump(Player* parent)
     :PlayerStateBase(parent)
 {
+    pl->velocity.y = 15.0f;
+    pl->isJump = true;
 }
 
 PlayerJump::~PlayerJump()
@@ -388,5 +389,10 @@ PlayerJump::~PlayerJump()
 
 void PlayerJump::Update()
 {
+    //pl->velocity.y -= 0.5f;
 
+    if (pl->IsJump())
+    {
+        pl->ChangPlayState(Player::PlayState::sNormal);
+    }
 }

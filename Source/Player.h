@@ -90,10 +90,10 @@ private:
 	{
 		NEUTRAL,
 		RUN,
-		JUMP,
 		ATTACK,
 		ATTACK2,
-		ATTACK3
+		ATTACK3,
+		JUMP
 	};
 	AnimState animState;
 
