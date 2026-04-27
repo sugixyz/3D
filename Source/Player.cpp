@@ -206,7 +206,7 @@ void Player::ChangPlayState(PlayState st)
         }
         switch (st)
         {
-            case PlayState::sNormal:
+        case PlayState::sNormal:
             stateInst = new PlayerNormal(this);
             break;
         case PlayState::sAttack1:
@@ -217,6 +217,9 @@ void Player::ChangPlayState(PlayState st)
             break;
         case PlayState::sAttack3:
             stateInst = new PlayerAttack3(this);
+            break;
+        case PlayState::sJump:
+            stateInst = new PlayerJump(this);
             break;
         }
         playState = st;
@@ -372,4 +375,18 @@ void PlayerAttack3::Update()
     {
         pl->ChangPlayState(Player::sNormal);
     }
+}
+
+PlayerJump::PlayerJump(Player* parent)
+    :PlayerStateBase(parent)
+{
+}
+
+PlayerJump::~PlayerJump()
+{
+}
+
+void PlayerJump::Update()
+{
+
 }

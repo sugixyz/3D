@@ -46,12 +46,21 @@ public:
 	void Update() override;
 };
 
+class PlayerJump : public PlayerStateBase
+{
+public:
+	PlayerJump(Player* parent);
+	~PlayerJump();
+	void Update() override;
+};
+
 class Player : public Object3D
 {
 	friend class PlayerNormal;
 	friend class PlayerAttack1;
 	friend class PlayerAttack2;
 	friend class PlayerAttack3;
+	friend class PlayerJump;
 public:
 	Player();
 	~Player();
@@ -81,6 +90,7 @@ private:
 	{
 		NEUTRAL,
 		RUN,
+		JUMP,
 		ATTACK,
 		ATTACK2,
 		ATTACK3
@@ -99,6 +109,8 @@ private:
 		sAttack2,
 		//UŒ‚3
 		sAttack3,
+		//ƒWƒƒƒ“ƒvó‘Ô
+		sJump,
 	};
 	//ó‘ÔŠÇ——p•Ï”
 	PlayState playState;
