@@ -33,10 +33,6 @@ void Object3D::Draw()
 	DrawHP();
 }
 
-void Object3D::Attack()
-{
-}
-
 void Object3D::TakeDamage(int damage)
 {
 	HP -= damage;

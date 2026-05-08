@@ -36,11 +36,14 @@ Player::Player()
     //アニメーター
     animator = new Animator(hModel);
     //アニメーションの追加　番号　名前　ループするか
-    animator->AddFile(0, "data/models/Character/Player/Anim_Neutral.mv1", true);
-    animator->AddFile(1, "data/models/Character/Player/Anim_Run.mv1", true);
-    animator->AddFile(2, "data/models/Character/Player/Anim_Attack1.mv1", false);
-    animator->AddFile(3, "data/models/Character/Player/Anim_Attack2.mv1", false);
-    animator->AddFile(4, "data/models/Character/Player/Anim_Attack3.mv1", false);
+    animator->AddFile(NEUTRAL, "data/models/Character/Player/Anim_Neutral.mv1", true);
+    animator->AddFile(RUN, "data/models/Character/Player/Anim_Run.mv1", true);
+    animator->AddFile(ATTACK, "data/models/Character/Player/Anim_Attack1.mv1", false);
+    animator->AddFile(ATTACK2, "data/models/Character/Player/Anim_Attack2.mv1", false);
+    animator->AddFile(ATTACK3, "data/models/Character/Player/Anim_Attack3.mv1", false);
+    animator->AddFile(JUMP_IN, "data/models/Character/Player/Anim_Jump_In.mv1", false);
+    animator->AddFile(JUMP_LOOP, "data/models/Character/Player/Anim_Jump_Loop.mv1", false);
+    animator->AddFile(JUMP_OUT, "data/models/Character/Player/Anim_Jump_Out.mv1", false);
     animState = AnimState::NEUTRAL;
     animator->Play((int)animState);
 
@@ -53,6 +56,7 @@ Player::Player()
 
 Player::~Player()
 {
+    delete animator;
 }
 
 void Player::Update()
@@ -154,32 +158,6 @@ void Player::UpdateOver()
 {
 }
 
-void Player::Attack()
-{
-    //全敵を検索
-    auto goblins = FindGameObjects<Goblin>();
-    for (Goblin* gb : goblins) {
-        //距離
-        VECTOR3 gbPos = gb->GetPos();
-        float length = VSize(position - gbPos);
-        //向き（プレイヤーの前にいるか）
-        VECTOR3 forward = VGet(sinf(rotation.y), 0, cosf(rotation.y));
-        //プレイヤーから敵へのベクトル
-        VECTOR3 toEnemy = VSub(gbPos, position);
-        toEnemy.y = 0; // 高さは無視
-        toEnemy = VNorm(toEnemy);
-        //内積
-        float dot = VDot(forward, toEnemy);
-        // 1.0 なら真ん前、0 なら真横、-1.0 なら真後ろ
-        //前方180度
-        if (length < ATTACK_LENGTH && dot > 0.0f) { 
-            gb->TakeDamage(damage);
-            gb->KnockBack();
-        }
-    }
-}
-
-
 void Object3D::DrawStamina()
 {
     unsigned int color = COL_GREEN;
@@ -224,6 +202,24 @@ void Player::ChangPlayState(PlayState st)
         }
         playState = st;
     }
+}
+
+bool Player::Attack()
+{
+    auto gobs = FindGameObjects<Goblin>();
+    for (auto g : gobs)
+    {
+        //サーベルの座標
+        int wp = MV1SearchFrame(hModel, "wp");
+        MATRIX m = MV1GetFrameLocalWorldMatrix(hModel, wp);
+        //手の場所
+        VECTOR3 p1 = VECTOR3(0, 0, 0) * m;
+        //サーベルの先
+        VECTOR3 p2 = VECTOR3(0, -100, 0) * m;
+
+        g->AttackHit(p1,p2);
+    }
+    return false;
 }
 
 PlayerNormal::PlayerNormal(Player* parent)
@@ -291,6 +287,7 @@ void PlayerNormal::Update()
     //ジャンプ入力 (接地中のみ)
     if (CheckHitKey(KEY_INPUT_SPACE) && !pl->isJump) {
         pl->ChangPlayState(Player::PlayState::sJump);
+        return;
     }
 
     //座標の更新 (ここで一気に移動)
@@ -306,7 +303,6 @@ void PlayerNormal::Update()
 PlayerAttack1::PlayerAttack1(Player* parent)
     :PlayerStateBase(parent)
 {
-    pl->Attack();
     pl->animState = Player::AnimState::ATTACK;
 }
 
@@ -316,6 +312,11 @@ PlayerAttack1::~PlayerAttack1()
 
 void PlayerAttack1::Update()
 {
+    float frame = pl->animator->GetCurrentFrame();
+    if (frame >= 3.5f && frame <= 8.5f)
+    {
+        pl->Attack();
+    }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
         if (CheckHitKey(KEY_INPUT_RETURN))
@@ -333,7 +334,6 @@ void PlayerAttack1::Update()
 PlayerAttack2::PlayerAttack2(Player* parent)
     :PlayerStateBase(parent)
 {
-    pl->Attack();
     pl->animState = Player::AnimState::ATTACK2;
 }
 
@@ -343,6 +343,11 @@ PlayerAttack2::~PlayerAttack2()
 
 void PlayerAttack2::Update()
 {
+    float frame = pl->animator->GetCurrentFrame();
+    if (frame >= 3.5f && frame <= 8.5f)
+    {
+        pl->Attack();
+    }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
         if (CheckHitKey(KEY_INPUT_RETURN))
@@ -360,7 +365,6 @@ void PlayerAttack2::Update()
 PlayerAttack3::PlayerAttack3(Player* parent)
     :PlayerStateBase(parent)
 {
-    pl->Attack();
     pl->animState = Player::AnimState::ATTACK3;
 }
 
@@ -370,6 +374,11 @@ PlayerAttack3::~PlayerAttack3()
 
 void PlayerAttack3::Update()
 {
+    float frame = pl->animator->GetCurrentFrame();
+    if (frame >= 3.5f && frame <= 8.5f)
+    {
+        pl->Attack();
+    }
     if (pl->animator->IsFinish())
     {
         pl->ChangPlayState(Player::sNormal);
@@ -380,6 +389,7 @@ PlayerJump::PlayerJump(Player* parent)
     :PlayerStateBase(parent)
 {
     pl->velocity.y = 15.0f;
+    pl->animState = Player::AnimState::JUMP_IN;
     pl->isJump = true;
 }
 
@@ -389,10 +399,21 @@ PlayerJump::~PlayerJump()
 
 void PlayerJump::Update()
 {
-    //pl->velocity.y -= 0.5f;
+    pl->velocity.y -= 0.5f;
+    //座標の更新 (ここで一気に移動)
+    pl->position += pl->velocity;
 
-    if (pl->IsJump())
+    if (pl->animState == Player::AnimState::JUMP_IN && pl->animator->IsFinish())
+    {
+        pl->animState = Player::AnimState::JUMP_LOOP;
+    }
+
+    if (!pl->IsJump() && pl->animator->IsFinish())
     {
         pl->ChangPlayState(Player::PlayState::sNormal);
+    }
+    else if (!pl->IsJump())
+    {
+        pl->animState = Player::AnimState::JUMP_OUT;
     }
 }

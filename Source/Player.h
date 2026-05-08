@@ -66,7 +66,6 @@ public:
 	~Player();
 	void Update() override;
 	void Draw() override;
-	void Attack() override;
 	bool IsJump() { return isJump; }
 	void PlayStart() { state = State::INPLAY; }
 private:
@@ -77,9 +76,6 @@ private:
 		OVER
 	};
 	State state;
-	void UpdateReady();
-	void UpdateInplay();
-	void UpdateOver();
 
 	//スタミナ切れ
 	bool isExhausted;
@@ -93,7 +89,9 @@ private:
 		ATTACK,
 		ATTACK2,
 		ATTACK3,
-		JUMP
+		JUMP_IN,
+		JUMP_LOOP,
+		JUMP_OUT
 	};
 	AnimState animState;
 
@@ -119,5 +117,11 @@ private:
 	//武器用ハンドル
 	int hWeapon;
 private:
+	void UpdateReady();
+	void UpdateInplay();
+	void UpdateOver();
+
 	void ChangPlayState(PlayState st);
+
+	bool Attack();
 };

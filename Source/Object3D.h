@@ -11,7 +11,7 @@ public:
 	VECTOR3 GetRotation() { return rotation; }
 	VECTOR3 GetPos() { return position; }
 	bool isDead() { return HP <= 0; }
-	virtual void Attack();
+	//virtual void Attack();
 	void TakeDamage(int damage);
 protected:
 	int hModel;

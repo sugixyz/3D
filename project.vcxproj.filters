@@ -63,7 +63,6 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\CountDown.cpp" />
-    <ClCompile Include="Source\GoblinSword.cpp" />
     <ClCompile Include="Source\Goblin.cpp" />
     <ClCompile Include="Source\Fade.cpp" />
     <ClCompile Include="Source\PlayerSword.cpp" />
@@ -149,7 +148,6 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\CountDown.h" />
-    <ClInclude Include="Source\GoblinSword.h" />
     <ClInclude Include="Source\Goblin.h" />
     <ClInclude Include="Source\Fade.h" />
     <ClInclude Include="Source\Lerp.h" />
