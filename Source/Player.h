@@ -66,7 +66,14 @@ public:
 	~Player();
 	void Update() override;
 	void Draw() override;
+	/// <summary>
+	/// ジャンプしているか
+	/// </summary>
+	/// <returns>ジャンプしていたらtrue</returns>
 	bool IsJump() { return isJump; }
+	/// <summary>
+	/// ゲームスタートを知らせる
+	/// </summary>
 	void PlayStart() { state = State::INPLAY; }
 private:
 	bool isJump;

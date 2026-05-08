@@ -15,6 +15,9 @@ public:
 	float radius;
 };
 
+/// <summary>
+/// ゴブリンの管理
+/// </summary>
 class Goblin : public Object3D
 {
 public:
@@ -22,8 +25,20 @@ public:
 	~Goblin();
 	void Update() override;
 	void Draw() override;
+	/// <summary>
+	/// ゲームスタートを知らせる
+	/// </summary>
 	void PlayStart() { state = State::INPLAY; }
+	/// <summary>
+	/// ノックバックさせる
+	/// </summary>
 	void KnockBack();
+	/// <summary>
+	/// プレイヤーから攻撃を受ける
+	/// </summary>
+	/// <param name="pos1">線分の始点</param>
+	/// <param name="pos2">線分の終点</param>
+	/// <returns>当たってたらtrue	</returns>
 	bool AttackHit(VECTOR3 pos1, VECTOR3 pos2);
 private:
 	enum State {
