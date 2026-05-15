@@ -40,7 +40,7 @@ Goblin::Goblin()
 	animator->Play((int)animState);
 
 	//当たり判定用のカプセルの初期化
-	capsule = new Capsule(position + TOP_POS, position + BOTTOM_POS, 40.0f);
+	capsule = new Capsule(position + TOP_POS, position + BOTTOM_POS, 50.0f);
 
 	playState = sNormal;
 	//playState = sRun;

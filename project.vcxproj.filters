@@ -71,6 +71,12 @@
     <ClCompile Include="Source\Animator.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Pad.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -155,6 +161,12 @@
     <ClInclude Include="Source\Result.h" />
     <ClInclude Include="Source\Start.h" />
     <ClInclude Include="Source\Animator.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Pad.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

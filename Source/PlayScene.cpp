@@ -6,8 +6,9 @@
 #include"Start.h"
 #include"Fade.h"
 #include"CountDown.h"
-#include"PlayerSword.h"
 #include"Result.h"
+#include"Camera.h"
+#include"Pad.h"
 
 PlayScene::PlayScene()
 {
@@ -15,6 +16,8 @@ PlayScene::PlayScene()
 	new Stage();
 	new Player();
 	new Goblin();
+	new Camera();
+
 	state = State::COUNT;
 	gTime = 0;
 	GoblinCounter = 0;

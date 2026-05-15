@@ -5,6 +5,8 @@
 #include "PlayScene.h"
 #include"Goblin.h"
 #include"PlayerSword.h"
+#include"Camera.h"
+#include"Pad.h"
 
 namespace {
     const float STAMINA_MAX = 10.0f;
@@ -110,11 +112,8 @@ void Player::UpdateReady() {
     }
 
     // カメラ更新
-    VECTOR3 camPos;
-    //Cキーでバックビュー
-    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
-    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
-    SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
+    Camera* cam = FindGameObject<Camera>();
+    cam->SetPlayerPosition(position);
 }
 
 void Player::UpdateInplay()
@@ -128,11 +127,8 @@ void Player::UpdateInplay()
     if (isDead())GetScene<PlayScene>()->OnResult();
 
     // カメラ更新
-    VECTOR3 camPos;
-    //Cキーでバックビュー
-    if (CheckHitKey(KEY_INPUT_C))camPos = VECTOR3(0, 350, 600) * MGetRotY(rotation.y) + position;
-    else camPos = VECTOR3(0, 350, -600) * MGetRotY(rotation.y) + position;
-    SetCameraPositionAndTarget_UpVecY(camPos, position + VECTOR3(0, 250, 0));
+    Camera* cam = FindGameObject<Camera>();
+    cam->SetPlayerPosition(position);
 
     //アニメーションの適応
     animator->Play((int)animState);
@@ -233,28 +229,16 @@ PlayerNormal::~PlayerNormal()
 
 void PlayerNormal::Update()
 {
-    if (CheckHitKey(KEY_INPUT_D)) pl->rotation.y += 3.0f * DegToRad;
-    if (CheckHitKey(KEY_INPUT_A)) pl->rotation.y -= 3.0f * DegToRad;
+    Pad* pad = FindGameObject<Pad>();
+    float sX = pad->LStickX();
+    float sY = pad->LStickY();
+    Camera* cam = FindGameObject<Camera>();
+    float speed = 10.0f;
+    VECTOR3 vel = { 0,0,0 };
 
-    VECTOR3 moveDir = VECTOR3(0, 0, 0);
-    if (CheckHitKey(KEY_INPUT_W)) {
-        moveDir.z = 10.0f;
-        //走るアニメーションに
-        pl->animState = Player::AnimState::RUN;
-    }
-    else if (CheckHitKey(KEY_INPUT_S)) {
-        moveDir.z = -10.0f;
-        //走るアニメーションに
-        pl->animState = Player::AnimState::RUN;
-    }
-    else
-    {
-        //ニュートラルに
-        pl->animState = Player::AnimState::NEUTRAL;
-    }
     //ダッシュ
-    if (CheckHitKey(KEY_INPUT_LSHIFT) && !pl->isExhausted) {
-        moveDir.z *= 1.5f;
+    if (sY >= 0.9f && !pl->isExhausted) {
+        speed *= 1.5f;
         //５０秒でスタミナ切れ
         pl->stamina -= Time::DeltaTime() * 2;
         if (pl->stamina <= 0) {
@@ -269,23 +253,52 @@ void PlayerNormal::Update()
     }
     //スタミナ切れ
     if (pl->isExhausted) {
-        moveDir.z *= 0.8;
+        speed *= 0.8;
         if (pl->stamina > (STAMINA_MAX / 2)) {
             pl->isExhausted = false;
         }
     }
 
-    // プレイヤーの向きに合わせて回転させる
-    moveDir = moveDir * MGetRotY(pl->rotation.y);
+    if (sX != 0.0f || sY != 0.0f) {
+        float angle = atan2f(sX, sY);
+        vel = cam->Forward() * MGetRotY(angle) * speed;
+        VECTOR3 forward = VECTOR3(0, 0, 1) * MGetRotY(pl->rotation.y);
 
-    //速度の更新
-    pl->velocity.x = moveDir.x;
-    pl->velocity.z = moveDir.z;
+        VECTOR3 velNorm = vel.Normalize();
+        float dot = velNorm.Dot(forward);
+        if (dot >= cos(30 * DegToRad))
+        {
+            pl->rotation.y = atan2(vel.x,vel.z);
+        }
+        else
+        {
+            VECTOR3 right = VECTOR3(1, 0, 0);
+            vel = VECTOR3(0, 0, 0);
+            float dot = velNorm.Dot(right);
+            if (dot > 0)
+            {
+                pl->rotation.y += 30.0f * DegToRad;
+            }
+            else
+            {
+                pl->rotation.y -= 30.0f * DegToRad;
+            }
+        }
 
+        pl->animState = Player::AnimState::RUN;
+    }
+    else
+    {
+        pl->animState = Player::AnimState::NEUTRAL;
+    }
+
+    pl->velocity.x = vel.x;
+    pl->velocity.z = vel.z;
     pl->velocity.y -= 0.5f;
+    pl->position += pl->velocity;
 
     //ジャンプ入力 (接地中のみ)
-    if (CheckHitKey(KEY_INPUT_SPACE) && !pl->isJump) {
+    if (pad->Pushed(Pad::JUMP) && !pl->isJump) {
         pl->ChangPlayState(Player::PlayState::sJump);
         return;
     }
@@ -295,7 +308,7 @@ void PlayerNormal::Update()
 
     //攻撃
     //キーを押すと即攻撃
-    if (CheckHitKey(KEY_INPUT_RETURN)) {
+    if (pad->Pushed(Pad::ATTACK)) {
         pl->ChangPlayState(Player::PlayState::sAttack1);
     }
 }
@@ -312,6 +325,8 @@ PlayerAttack1::~PlayerAttack1()
 
 void PlayerAttack1::Update()
 {
+    Pad* pad = FindGameObject<Pad>();
+
     float frame = pl->animator->GetCurrentFrame();
     if (frame >= 3.5f && frame <= 8.5f)
     {
@@ -319,7 +334,7 @@ void PlayerAttack1::Update()
     }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
-        if (CheckHitKey(KEY_INPUT_RETURN))
+        if (pad->Pushed(Pad::ATTACK))
         {
             pl->ChangPlayState(Player::sAttack2);
             return;
@@ -343,6 +358,7 @@ PlayerAttack2::~PlayerAttack2()
 
 void PlayerAttack2::Update()
 {
+    Pad* pad = FindGameObject<Pad>();
     float frame = pl->animator->GetCurrentFrame();
     if (frame >= 3.5f && frame <= 8.5f)
     {
@@ -350,7 +366,7 @@ void PlayerAttack2::Update()
     }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
-        if (CheckHitKey(KEY_INPUT_RETURN))
+        if (pad->Pushed(Pad::ATTACK))
         {
             pl->ChangPlayState(Player::sAttack3);
             return;
