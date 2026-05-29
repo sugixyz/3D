@@ -18,13 +18,14 @@ protected:
 	VECTOR3 position;
 	VECTOR3 rotation;
 	VECTOR3 velocity;
+	VECTOR3 scale = { 1,1,1 };
 
 	//スタミナ
 	float stamina;
 	void DrawStamina();
 
 	//HP
-	float HP;
+	float HP = -1;
 	float HP_MAX;
 	void DrawHP();
 

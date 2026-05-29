@@ -12,6 +12,7 @@ Pad::~Pad()
 
 void Pad::Update()
 {
+	prevState = inputState;
 	GetJoypadXInputState(DX_INPUT_PAD1, &inputState);
 	//キー入力をコントローラー入力に変換	
 	if (CheckHitKey(KEY_INPUT_D))
@@ -24,7 +25,11 @@ void Pad::Update()
 	}
 	if (CheckHitKey(KEY_INPUT_W))
 	{
-		inputState.ThumbLY = 32767;
+		inputState.ThumbLY = 16384;
+		if (CheckHitKey(KEY_INPUT_LSHIFT))
+		{
+			inputState.ThumbLY = 32678;
+		}
 	}
 	if (CheckHitKey(KEY_INPUT_S))
 	{
@@ -55,16 +60,16 @@ void Pad::Update()
 		inputState.Buttons[JUMP] = 1;
 	}
 
-	ImGui::Begin("PAD");
-	int sX = inputState.ThumbLX;
-	int sY = inputState.ThumbLY;
-	int a = inputState.Buttons[XINPUT_BUTTON_A];
-	int b = inputState.Buttons[XINPUT_BUTTON_B];
-	ImGui::InputInt("X", &sX);
-	ImGui::InputInt("Y", &sY);
-	ImGui::InputInt("A", &a);
-	ImGui::InputInt("B", &b);
-	ImGui::End();
+	//ImGui::Begin("PAD");
+	//int sX = inputState.ThumbLX;
+	//int sY = inputState.ThumbLY;
+	//int a = inputState.Buttons[XINPUT_BUTTON_A];
+	//int b = inputState.Buttons[XINPUT_BUTTON_B];
+	//ImGui::InputInt("X", &sX);
+	//ImGui::InputInt("Y", &sY);
+	//ImGui::InputInt("A", &a);
+	//ImGui::InputInt("B", &b);
+	//ImGui::End();
 }
 
 float IntToRate(int n)
@@ -106,5 +111,10 @@ float Pad::RStickY()
 bool Pad::Pushed(int id)
 {
 	return inputState.Buttons[id] != 0;
+}
+
+bool Pad::PushTrigger(int id)
+{
+	return inputState.Buttons[id] != 0 && prevState.Buttons[id] == 0;
 }
 

@@ -13,15 +13,16 @@ namespace {
 	const VECTOR3 BOTTOM_POS = VECTOR3(0, 0, 0);
 }
 
-Goblin::Goblin()
+Goblin::Goblin(VECTOR pos, float rotY)
 {
 	//SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
 	hModel = MV1LoadModel("data/models/Character/Goblin/Goblin.mv1");
 	assert(hModel > 0);
 	int root = MV1SearchFrame(hModel, "root");
 	MV1SetFrameUserLocalMatrix(hModel, root, MGetRotY(DX_PI_F));
-	position = VECTOR3(GetRand(5000)-2500, 500, GetRand(5000) - 2500);
-	rotation = VECTOR3(0, GetRand(360) * DegToRad, 0);
+	position = pos;
+	rotation = VECTOR3(0, 0, 0);
+	rotation.y = rotY;
 	velocity = VECTOR3(0, 0, 0);
 	state = State::READY;
 

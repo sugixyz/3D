@@ -14,8 +14,8 @@ PlayScene::PlayScene()
 {
 	Fade* fade = new Fade();
 	new Stage();
-	new Player();
-	new Goblin();
+	//new Player();
+	//new Goblin();
 	new Camera();
 
 	state = State::COUNT;
@@ -52,9 +52,11 @@ void PlayScene::Update()
 				new Start();
 				Player* pl = FindGameObject<Player>();
 				pl->PlayStart();
-				Goblin* gb = FindGameObject<Goblin>();
-				gb->PlayStart();
-				//new PlayerSword();
+				auto gb = FindGameObjects<Goblin>();
+				for (auto g : gb)
+				{
+					g->PlayStart();
+				}
 				state = State::INPLAY;
 				gTime = 0;
 			}
@@ -63,14 +65,6 @@ void PlayScene::Update()
 	}
 	case INPLAY: 
 	{
-		if (gTime < 5.0f) {
-			gTime += Time::DeltaTime();
-			if (gTime >= 5.0f) {
-				Goblin* e = new Goblin();
-				e->PlayStart();
-				gTime = 0;
-			}
-		}
 		break;
 	}
 	case RESULT:

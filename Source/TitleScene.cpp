@@ -1,8 +1,36 @@
 #include "TitleScene.h"
 #include"Pad.h"
+#include<fstream>
 
 TitleScene::TitleScene()
 {
+	//ファイルを開く out バイナリーファイルとして
+	std::ofstream fs("data/test.bin",std::ios::binary);
+	struct STR
+	{
+		int i1;
+		int i2;
+	};
+	STR str;
+	str.i1 = 1024;
+	str.i2 = 255;
+	//書き込み　charのポインタ、サイズ
+	fs.write((char*)&str, sizeof(str));
+	//ファイルを閉じる
+	fs.close();
+
+	//ファイルを開く in
+	std::ifstream fr("data/test.bin");
+	STR str2;
+	//読み込み
+	fr.read((char*)&str2, sizeof(str2));
+	fr.close();
+
+	//文字列の書き込み
+	const char* s = "ABC\nDEF";
+	std::ofstream ff("data/moji.bin",std::ios::binary);
+	ff.write(s, strlen(s) + 1);
+	ff.close();
 }
 
 TitleScene::~TitleScene()

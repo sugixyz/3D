@@ -14,17 +14,17 @@ namespace {
     const int ATTACK_DAMAGE = 50;
 }
 
-Player::Player()
+Player::Player(VECTOR pos, float rotY)
 {
-	SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
-	hModel = MV1LoadModel("data/models/Character/Player/PC.mv1");
-	assert(hModel > 0);
-	int root = MV1SearchFrame(hModel, "root");
-	MV1SetFrameUserLocalMatrix(hModel, root, MGetRotY(DX_PI_F));
-	position = VECTOR3(0, 0, 0);
-	rotation = VECTOR3(0, 0, 0);
-	velocity = VECTOR3(0, 0, 0);
-	isJump = false;
+    SetCameraPositionAndTarget_UpVecY(VECTOR3(0, 350, -500), VECTOR3(0, 250, 0));
+    hModel = MV1LoadModel("data/models/Character/Player/PC.mv1");
+    assert(hModel > 0);
+    int root = MV1SearchFrame(hModel, "root");
+    MV1SetFrameUserLocalMatrix(hModel, root, MGetRotY(DX_PI_F));
+    position = pos;
+    rotation = VECTOR3(0, rotY, 0);
+    velocity = VECTOR3(0, 0, 0);
+    isJump = false;
     state = READY;
 
     stamina = STAMINA_MAX;
@@ -133,11 +133,15 @@ void Player::UpdateInplay()
     //アニメーションの適応
     animator->Play((int)animState);
 
-    //地面との当たり判定
     Stage* stage = FindGameObject<Stage>();
+
+    VECTOR3 pushVec = stage->CollideSphere(position + VECTOR3(0, 60, 0), 50);
+    position += pushVec;
+
+    //地面との当たり判定
     VECTOR3 hitPos;
     // 足元付近に地面があるかチェック
-    if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -100, 0), &hitPos)) {
+    if (stage->CollideRay(position + VECTOR3(0, 20, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
         // 「落下中」かつ「地面より下にいる」時だけ着地させる
         if (velocity.y <= 0 && position.y <= hitPos.y) {
             position.y = hitPos.y;
@@ -233,7 +237,7 @@ void PlayerNormal::Update()
     float sX = pad->LStickX();
     float sY = pad->LStickY();
     Camera* cam = FindGameObject<Camera>();
-    float speed = 10.0f;
+    float speed = 8.0f;
     VECTOR3 vel = { 0,0,0 };
 
     //ダッシュ
@@ -308,7 +312,9 @@ void PlayerNormal::Update()
 
     //攻撃
     //キーを押すと即攻撃
-    if (pad->Pushed(Pad::ATTACK)) {
+    //if (pad->Pushed(Pad::ATTACK)) 
+    if(pad->PushTrigger(Pad::ATTACK))
+    {
         pl->ChangPlayState(Player::PlayState::sAttack1);
     }
 }
@@ -334,7 +340,8 @@ void PlayerAttack1::Update()
     }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
-        if (pad->Pushed(Pad::ATTACK))
+        //if (pad->Pushed(Pad::ATTACK))
+        if (pad->PushTrigger(Pad::ATTACK))
         {
             pl->ChangPlayState(Player::sAttack2);
             return;
@@ -366,7 +373,8 @@ void PlayerAttack2::Update()
     }
     if (pl->animator->GetCurrentFrame() >= 8.5f)
     {
-        if (pad->Pushed(Pad::ATTACK))
+        //if (pad->Pushed(Pad::ATTACK))
+        if (pad->PushTrigger(Pad::ATTACK))
         {
             pl->ChangPlayState(Player::sAttack3);
             return;

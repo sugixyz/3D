@@ -21,7 +21,7 @@ public:
 class Goblin : public Object3D
 {
 public:
-	Goblin();
+	Goblin(VECTOR pos, float rotY);
 	~Goblin();
 	void Update() override;
 	void Draw() override;

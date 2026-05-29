@@ -24,9 +24,12 @@ void Object3D::Draw()
 //	MV1SetRotationXYZ(hModel, rotation);
 //	MV1SetPosition(hModel, position);
 
+	MATRIX mRotX = MGetRotX(rotation.x);
 	MATRIX mRotY = MGetRotY(rotation.y);
+	MATRIX mRotZ = MGetRotZ(rotation.z);
 	MATRIX mTrans = MGetTranslate(position);
-	MATRIX mat = mRotY * mTrans; // ‰ñ‚µ‚Ä‚©‚çˆÚ“®
+	MATRIX mScale = MGetScale(scale);
+	MATRIX mat = mScale * mRotZ * mRotX * mRotY * mTrans; // ‰ñ‚µ‚Ä‚©‚çˆÚ“®
 	MV1SetMatrix(hModel, mat);
 	MV1DrawModel(hModel);
 	if (stamina > -1)DrawStamina();
@@ -41,6 +44,8 @@ void Object3D::TakeDamage(int damage)
 
 void Object3D::DrawHP()
 {
+	if (HP <= 0)return;
+
 	//3DÀ•W‚ð2D‰æ–ÊÀ•W‚É•ÏŠ·
 	VECTOR screenPos = ConvWorldPosToScreenPos(position + VECTOR3(0, 200, 0));
 

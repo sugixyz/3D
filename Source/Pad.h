@@ -17,8 +17,11 @@ public:
 	float RStickY();
 	//idのボタンを押しているか
 	bool Pushed(int id);
+	//idのボタンを押した瞬間
+	bool PushTrigger(int id);
 	static const int ATTACK = XINPUT_BUTTON_A;
 	static const int JUMP = XINPUT_BUTTON_B;
 private:
 	XINPUT_STATE inputState;
+	XINPUT_STATE prevState;
 };

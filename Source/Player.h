@@ -62,7 +62,7 @@ class Player : public Object3D
 	friend class PlayerAttack3;
 	friend class PlayerJump;
 public:
-	Player();
+	Player(VECTOR pos, float rotY);
 	~Player();
 	void Update() override;
 	void Draw() override;
