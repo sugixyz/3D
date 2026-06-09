@@ -65,7 +65,6 @@
     <ClCompile Include="Source\CountDown.cpp" />
     <ClCompile Include="Source\Goblin.cpp" />
     <ClCompile Include="Source\Fade.cpp" />
-    <ClCompile Include="Source\PlayerSword.cpp" />
     <ClCompile Include="Source\Result.cpp" />
     <ClCompile Include="Source\Start.cpp" />
     <ClCompile Include="Source\Animator.cpp">
@@ -160,7 +159,6 @@
     <ClInclude Include="Source\Goblin.h" />
     <ClInclude Include="Source\Fade.h" />
     <ClInclude Include="Source\Lerp.h" />
-    <ClInclude Include="Source\PlayerSword.h" />
     <ClInclude Include="Source\Result.h" />
     <ClInclude Include="Source\Start.h" />
     <ClInclude Include="Source\Animator.h">
