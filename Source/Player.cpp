@@ -220,7 +220,11 @@ bool Player::Attack()
         //ƒT[ƒxƒ‹‚Ìæ
         VECTOR3 p2 = VECTOR3(0, -100, 0) * m;
 
-        g->AttackHit(p1,p2);
+        if (g->AttackHit(p1, p2))
+        {
+            Camera* cam = FindGameObject<Camera>();
+            cam->Shake();
+        }
     }
     return false;
 }
@@ -319,6 +323,8 @@ void PlayerNormal::Update()
     if(pad->PushTrigger(Pad::ATTACK))
     {
         pl->ChangPlayState(Player::PlayState::sAttack1);
+        Camera* cam = FindGameObject<Camera>();
+        cam->Delay();
     }
 }
 
