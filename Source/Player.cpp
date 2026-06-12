@@ -4,7 +4,6 @@
 #include<cmath>
 #include "PlayScene.h"
 #include"Goblin.h"
-#include"PlayerSword.h"
 #include"Camera.h"
 #include"Pad.h"
 
@@ -97,6 +96,8 @@ void Player::Draw()
     //サーベルの先
     VECTOR3 s = VECTOR3(0, -100, 0) * m;
     DrawLine3D(s, p, COL_RED);
+
+    DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
 }
 
 void Player::UpdateReady() {
@@ -141,7 +142,7 @@ void Player::UpdateInplay()
     //地面との当たり判定
     VECTOR3 hitPos;
     // 足元付近に地面があるかチェック
-    if (stage->CollideRay(position + VECTOR3(0, 20, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
+    if (stage->CollideRay(position + VECTOR3(0, 1000, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
         // 「落下中」かつ「地面より下にいる」時だけ着地させる
         if (velocity.y <= 0 && position.y <= hitPos.y) {
             position.y = hitPos.y;

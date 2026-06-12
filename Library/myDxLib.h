@@ -98,6 +98,8 @@ namespace DxLib {
 		// ベクトルの減算
 		const VECTOR3 operator -(const VECTOR3& v) { return VECTOR3(x - v.x, y - v.y, z - v.z); }
 		VECTOR3& operator -=(VECTOR3& v) { x -= v.y; y -= v.y; z -= v.z; return *this; }
+		const VECTOR3 operator -(const VECTOR& v) { return VECTOR3(x - v.x, y - v.y, z - v.z); }
+		VECTOR3& operator -=(VECTOR& v) { x -= v.y; y -= v.y; z -= v.z; return *this; }
 
 		// ベクトルの拡大
 		const VECTOR3 operator *(float scale) { return VECTOR3(x * scale, y * scale, z * scale); }

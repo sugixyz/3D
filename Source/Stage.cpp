@@ -62,20 +62,32 @@ bool Stage::CollideRay(VECTOR3 start, VECTOR3 end, VECTOR3* hit)
 
 VECTOR3 Stage::CollideSphere(VECTOR3 center, float radius)
 {
+	VECTOR3 ret = VECTOR3(0, 0, 0);
+
 	//VECTOR3 pushVec;
 	MV1_COLL_RESULT_POLY_DIM result = MV1CollCheck_Sphere(hModel, -1, center, radius);
 	for (int i = 0;i < result.HitNum;i++)
 	{
-		//ToDo: 横向きの壁には当てるけど、上向きの壁には当てない
+		//result.Dim[i].Normal
+		if (result.Dim[i].Normal.y > cosf(30.0f * DegToRad))continue;
 		//押し返してくる方向ベクトル
-		VECTOR3 pushDir = result.Dim[i].HitPosition - center;
+		VECTOR3 pushDir = center - result.Dim[i].HitPosition;
 		//中心から壁までの距離
 		float dist = pushDir.Size();
 		VECTOR3 push = pushDir.Normalize() * (radius - dist);
 		//ToDo: 複数のポリゴンのうち一番長いのを返すべき
-		return push;
+		//return push;
+		if (push.Size() >= ret.Size())ret = push;
 	}
-	return VECTOR3();
+	MV1CollResultPolyDimTerminate(result);
+
+	auto objs = FindGameObjects<StageObject>();
+	for (auto obj : objs)
+	{
+		VECTOR3 push = obj->CollideSphere(center, radius);
+		if (push.Size() >= ret.Size())ret = push;
+	}
+	return ret;
 }
 
 void Stage::ReadMappingData(int stageNo)

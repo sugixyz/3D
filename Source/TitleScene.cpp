@@ -10,10 +10,13 @@ TitleScene::TitleScene()
 	{
 		int i1;
 		int i2;
+		char c1;
+		char c2;
 	};
 	STR str;
 	str.i1 = 1024;
 	str.i2 = 255;
+	int size = sizeof(str);
 	//書き込み　charのポインタ、サイズ
 	fs.write((char*)&str, sizeof(str));
 	//ファイルを閉じる
