@@ -337,18 +337,27 @@ void PlayerAttack1::Update()
     Pad* pad = FindGameObject<Pad>();
 
     float frame = pl->animator->GetCurrentFrame();
-    //frame‚ª3.5‚Ü‚Å‚Ì‚É100“¥‚İ‚Ş
-    //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
-    Goblin* target = FindTarget();
-    if (target != nullptr)
+    if (frame <= 3.5f)
     {
-        VECTOR3 toGob = target->GetPos() - pl->position;
-        toGob = toGob.Normalize();
-        pl->position = target->GetPos() - toGob * 100;
-        pl->rotation.y = atan2(toGob.x, toGob.z);
+        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        Goblin* target = FindTarget();
+        VECTOR3 plTarget;
+        float rate = frame / 3.5f;
+
+        if (target != nullptr)
+        {
+            VECTOR3 toGob = target->GetPos() - pl->position;
+            toGob = toGob.Normalize();
+            plTarget = target->GetPos() - toGob * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+            pl->rotation.y = atan2(toGob.x, toGob.z);
+        }
+        else
+        {
+            plTarget = pl->position + pl->Forward() * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+        }
     }
-    //“¥‚İ‚ŞˆÊ’u‚ğŒˆ‚ß‚é
-    //‚±‚ÌˆÊ’u‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
     if (frame >= 3.5f && frame <= 8.5f)
     {
         pl->Attack();
@@ -382,6 +391,27 @@ void PlayerAttack2::Update()
 {
     Pad* pad = FindGameObject<Pad>();
     float frame = pl->animator->GetCurrentFrame();
+    if (frame <= 3.5f)
+    {
+        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        Goblin* target = FindTarget();
+        VECTOR3 plTarget;
+        float rate = frame / 3.5f;
+
+        if (target != nullptr)
+        {
+            VECTOR3 toGob = target->GetPos() - pl->position;
+            toGob = toGob.Normalize();
+            plTarget = target->GetPos() - toGob * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+            pl->rotation.y = atan2(toGob.x, toGob.z);
+        }
+        else
+        {
+            plTarget = pl->position + pl->Forward() * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+        }
+    }
     if (frame >= 3.5f && frame <= 8.5f)
     {
         pl->Attack();
@@ -414,6 +444,27 @@ PlayerAttack3::~PlayerAttack3()
 void PlayerAttack3::Update()
 {
     float frame = pl->animator->GetCurrentFrame();
+    if (frame <= 3.5f)
+    {
+        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        Goblin* target = FindTarget();
+        VECTOR3 plTarget;
+        float rate = frame / 3.5f;
+
+        if (target != nullptr)
+        {
+            VECTOR3 toGob = target->GetPos() - pl->position;
+            toGob = toGob.Normalize();
+            plTarget = target->GetPos() - toGob * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+            pl->rotation.y = atan2(toGob.x, toGob.z);
+        }
+        else
+        {
+            plTarget = pl->position + pl->Forward() * 100;
+            pl->position = (plTarget - pl->position) * rate + pl->position;
+        }
+    }
     if (frame >= 3.5f && frame <= 8.5f)
     {
         pl->Attack();

@@ -210,15 +210,15 @@ void Goblin::UpdateReturn()
 
 void Goblin::UpdateKnock()
 {
-	VECTOR3 moveDir = VECTOR3(0, 0, 0);
-	//å„ÇÎÇ…êÅÇ´îÚÇŒÇ∑
-	static float vel = -20.0f;
-	vel *= 0.9;
-	moveDir.z = vel;
+	float frame = animator->GetCurrentFrame();
 
-	moveDir = moveDir * MGetRotY(rotation.y);
-	velocity.x = moveDir.x;
-	velocity.z = moveDir.z;
+	if (frame < 7.0f)
+	{
+		VECTOR3 target = position -Forward() * 30.0f;
+		Player* p = FindGameObject<Player>();
+		VECTOR3 v = p->GetPos() - position;
+		position = (target - position) * (frame / 7.0f) + position;
+	}
 
 	if (animator->IsFinish())
 	{
@@ -233,6 +233,11 @@ void Goblin::KnockBack()
 	TakeDamage(25);
 	//è≠Çµè„Ç…îÚÇŒÇ∑
 	velocity.y += 10.0f;
+	Player* p = FindGameObject<Player>();
+	VECTOR3 toPlayer = p->GetPos() - position;
+	toPlayer = toPlayer.Normalize();
+	rotation.y = atan2(toPlayer.x, toPlayer.z);
+
 	playState = PlayState::sKnockback;
 	animState = AnimState::KNOCKBACK;
 }
