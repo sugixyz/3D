@@ -13,6 +13,8 @@ public:
 	bool isDead() { return HP <= 0; }
 	//virtual void Attack();
 	void TakeDamage(int damage);
+	VECTOR3 Forward();
+	VECTOR3 Right();
 protected:
 	int hModel;
 	VECTOR3 position;

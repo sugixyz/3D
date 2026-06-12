@@ -98,6 +98,8 @@ void Player::Draw()
     DrawLine3D(s, p, COL_RED);
 
     DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
+
+    DrawFormatString(400, 100, GetColor(255, 255, 255), "PLAYER %f %f %f", position.x, position.y, position.z);
 }
 
 void Player::UpdateReady() {
@@ -335,6 +337,18 @@ void PlayerAttack1::Update()
     Pad* pad = FindGameObject<Pad>();
 
     float frame = pl->animator->GetCurrentFrame();
+    //frame‚ª3.5‚Ü‚Å‚ÌŽž‚É100“¥‚Ýž‚Þ
+    //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ðŒ©‚Â‚¯‚é
+    Goblin* target = FindTarget();
+    if (target != nullptr)
+    {
+        VECTOR3 toGob = target->GetPos() - pl->position;
+        toGob = toGob.Normalize();
+        pl->position = target->GetPos() - toGob * 100;
+        pl->rotation.y = atan2(toGob.x, toGob.z);
+    }
+    //“¥‚Ýž‚ÞˆÊ’u‚ðŒˆ‚ß‚é
+    //‚±‚ÌˆÊ’u‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚é
     if (frame >= 3.5f && frame <= 8.5f)
     {
         pl->Attack();
@@ -441,4 +455,25 @@ void PlayerJump::Update()
     {
         pl->animState = Player::AnimState::JUMP_OUT;
     }
+}
+
+Goblin* PlayerStateBase::FindTarget()
+{
+    auto gobs = FindGameObjects<Goblin>();
+    Goblin* target = nullptr;
+    float nearest = 1000.0f;
+    for (auto g : gobs)
+    {
+        VECTOR3 v = g->GetPos() - pl->GetPos();
+        if (v.Size() < nearest)
+        {
+            float dot = pl->Forward().Dot(v.Normalize());
+            if (dot > cos(90 * DegToRad))
+            {
+                target = g;
+                nearest = v.Size();
+            }
+        }
+    }
+    return target;
 }

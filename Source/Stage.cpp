@@ -5,6 +5,8 @@
 #include"Goblin.h"
 #include"StageObject.h"
 
+#define DEBUG_MODE true
+
 Stage::Stage()
 {
 	hModel = MV1LoadModel("data/models/Stage/Stage00.mv1");
@@ -139,7 +141,12 @@ void Stage::ReadMappingData(int stageNo)
 	{
 		ObjectInfo obj;
 		ifs.read((char*)&obj, sizeof(obj));
+#if !DEBUG_MODE
 		new StageObject(obj.id, obj.position, obj.rotation, obj.scale);
+#endif
 	}
+#if DEBUG_MODE
+	new Goblin(VECTOR3(0, 100, 400), 0);
+#endif
 	ifs.close();
 }

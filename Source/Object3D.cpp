@@ -42,6 +42,16 @@ void Object3D::TakeDamage(int damage)
 	if (HP < 0)HP = 0;
 }
 
+VECTOR3 Object3D::Forward()
+{
+	return VECTOR3(0, 0, 1) * MGetRotY(rotation.y);
+}
+
+VECTOR3 Object3D::Right()
+{
+	return VECTOR3(1, 0, 0) * MGetRotY(rotation.y);
+}
+
 void Object3D::DrawHP()
 {
 	if (HP <= 0)return;

@@ -2,6 +2,8 @@
 #include "Object3D.h"
 #include"Animator.h"
 
+class Goblin;
+
 //プレイヤーというクラスがあることを明示する
 class Player;
 class PlayerStateBase
@@ -10,6 +12,7 @@ public:
 	PlayerStateBase(Player* parent) { pl = parent; }
 	virtual ~PlayerStateBase() {}
 	virtual void Update() {}
+	Goblin* FindTarget();
 protected:
 	Player* pl;
 };
