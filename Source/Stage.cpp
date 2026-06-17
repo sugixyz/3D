@@ -5,7 +5,7 @@
 #include"Goblin.h"
 #include"StageObject.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 Stage::Stage()
 {
