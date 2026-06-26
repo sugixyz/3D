@@ -68,7 +68,7 @@ void Player::Update()
         UpdateReady();
         break;
     }
-    case INPLAY :
+    case INPLAY:
     {
         UpdateInplay();
         break;
@@ -78,7 +78,22 @@ void Player::Update()
         UpdateOver();
         break;
     }
- }
+    }
+    Stage* stage = FindGameObject<Stage>();
+    //地面との当たり判定
+    VECTOR3 hitPos;
+    // 足元付近に地面があるかチェック
+    if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
+        // 「落下中」かつ「地面より下にいる」時だけ着地させる
+        if (velocity.y <= 0 && position.y <= hitPos.y) {
+            position.y = hitPos.y;
+            velocity.y = 0.0f;
+            isJump = false;
+        }
+    }
+    else {
+        isJump = true; // 足元に地面がなければ空中
+    }
 }
 
 void Player::Draw()
@@ -91,29 +106,23 @@ void Player::Draw()
     MV1SetMatrix(hWeapon, m);
     MV1DrawModel(hWeapon);
 
-    //手の場所
-    VECTOR3 p = VECTOR3(0, 0, 0) * m;
-    //サーベルの先
-    VECTOR3 s = VECTOR3(0, -100, 0) * m;
-    DrawLine3D(s, p, COL_RED);
 
-    DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
+    if (not ObjectManager::ShadowDrawing())
+    {
+        //手の場所
+        VECTOR3 p = VECTOR3(0, 0, 0) * m;
+        //サーベルの先
+        VECTOR3 s = VECTOR3(0, -100, 0) * m;
+        DrawLine3D(s, p, COL_RED);
 
-    DrawFormatString(400, 100, GetColor(255, 255, 255), "PLAYER %f %f %f", position.x, position.y, position.z);
+        DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
+
+        DrawFormatString(400, 100, GetColor(255, 255, 255), "PLAYER %f %f %f", position.x, position.y, position.z);
+    }
 }
 
 void Player::UpdateReady() {
-    //地面との当たり判定
-    Stage* stage = FindGameObject<Stage>();
-    VECTOR3 hitPos;
-    // 足元付近に地面があるかチェック
-    if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -100, 0), &hitPos)) {
-        // 「落下中」かつ「地面より下にいる」時だけ着地させる
-        if (velocity.y <= 0 && position.y <= hitPos.y) {
-            position.y = hitPos.y;
-        }
-    }
-
+    
     // カメラ更新
     Camera* cam = FindGameObject<Camera>();
     cam->SetPlayerPosition(position);
@@ -141,20 +150,6 @@ void Player::UpdateInplay()
     VECTOR3 pushVec = stage->CollideSphere(position + VECTOR3(0, 60, 0), 50);
     position += pushVec;
 
-    //地面との当たり判定
-    VECTOR3 hitPos;
-    // 足元付近に地面があるかチェック
-    if (stage->CollideRay(position + VECTOR3(0, 1000, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
-        // 「落下中」かつ「地面より下にいる」時だけ着地させる
-        if (velocity.y <= 0 && position.y <= hitPos.y) {
-            position.y = hitPos.y;
-            velocity.y = 0.0f;
-            isJump = false;
-        }
-    }
-    else {
-        isJump = true; // 足元に地面がなければ空中
-    }
 }
 
 void Player::UpdateOver()
@@ -461,13 +456,13 @@ void PlayerAttack3::Update()
         {
             VECTOR3 toGob = target->GetPos() - pl->position;
             toGob = toGob.Normalize();
-            plTarget = target->GetPos() - toGob * 100;
+            plTarget = target->GetPos() - toGob * 120;
             pl->position = (plTarget - pl->position) * rate + pl->position;
             pl->rotation.y = atan2(toGob.x, toGob.z);
         }
         else
         {
-            plTarget = pl->position + pl->Forward() * 100;
+            plTarget = pl->position + pl->Forward() * 120;
             pl->position = (plTarget - pl->position) * rate + pl->position;
         }
     }

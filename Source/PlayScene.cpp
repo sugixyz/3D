@@ -9,14 +9,14 @@
 #include"Result.h"
 #include"Camera.h"
 #include"Pad.h"
+#include"Light.h"
 
 PlayScene::PlayScene()
 {
 	Fade* fade = new Fade();
 	new Stage();
-	//new Player();
-	//new Goblin();
 	new Camera();
+	new Light();
 
 	state = State::COUNT;
 	gTime = 0;

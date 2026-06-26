@@ -8,6 +8,7 @@
 #include <list>
 #include <string>
 class GameObject;
+#include<DxLib.h>
 
 namespace ObjectManager
 {
@@ -15,6 +16,10 @@ namespace ObjectManager
 	void Update(); // XV
 	void Draw(); // •`‰æ
 	void Release(); // ŠJ•ú
+
+	bool ShadowDrawing();
+	void SetShadowLight(VECTOR dir);
+	void SetShadowBox(VECTOR min, VECTOR max);
 
 	/// <summary>
 	/// GameObject‚ğ’Ç‰Á‚µ‚Ü‚·

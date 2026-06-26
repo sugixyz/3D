@@ -32,8 +32,12 @@ void Object3D::Draw()
 	MATRIX mat = mScale * mRotZ * mRotX * mRotY * mTrans; // ‰ñ‚µ‚Ä‚©‚çˆÚ“®
 	MV1SetMatrix(hModel, mat);
 	MV1DrawModel(hModel);
-	if (stamina > -1)DrawStamina();
-	DrawHP();
+
+	if (not ObjectManager::ShadowDrawing())
+	{
+		if (stamina > -1)DrawStamina();
+		DrawHP();
+	}
 }
 
 void Object3D::TakeDamage(int damage)

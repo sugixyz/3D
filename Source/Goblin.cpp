@@ -66,9 +66,12 @@ void Goblin::Draw()
 {
 	Object3D::Draw();
 
-	//カプセルの表示
-	DrawCapsule3D(capsule->top, capsule->bottom, capsule->radius,
-		10, COL_RED,COL_RED, FALSE);
+	if (not ObjectManager::ShadowDrawing())
+	{
+		//カプセルの表示
+		DrawCapsule3D(capsule->top, capsule->bottom, capsule->radius,
+			10, COL_RED, COL_RED, FALSE);
+	}
 }
 
 void Goblin::UpdateInplay()
@@ -230,7 +233,7 @@ void Goblin::UpdateKnock()
 void Goblin::KnockBack()
 {
 	if (playState == PlayState::sKnockback)return;
-	TakeDamage(25);
+	TakeDamage(ATTACK_DAMAGE);
 	//少し上に飛ばす
 	velocity.y += 10.0f;
 	Player* p = FindGameObject<Player>();

@@ -5,11 +5,11 @@
 #include"Goblin.h"
 #include"StageObject.h"
 
-#define DEBUG_MODE true
+#define DEBUG_MODE false
 
 Stage::Stage()
 {
-	hModel = MV1LoadModel("data/models/Stage/Stage00.mv1");
+	hModel = MV1LoadModel("data/models/Stage/Stage01.mv1");
 	assert(hModel > 0);
 	MV1SetupCollInfo(hModel, -1);
 	ReadMappingData(0);
@@ -126,7 +126,7 @@ void Stage::ReadMappingData(int stageNo)
 		int object[8]; // オブジェクトの番号
 	};
 
-	std::ifstream ifs("data/models/Stage/Stage00.dat",std::ios::binary);
+	std::ifstream ifs("data/models/Stage/Stage01.dat",std::ios::binary);
 	assert(ifs);
 	Header h;
 	ifs.read((char*)&h, sizeof(h));

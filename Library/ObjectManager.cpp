@@ -8,7 +8,42 @@ namespace
 	std::list<GameObject*>* objects;
 	bool needSortDraw;
 	GameObject* running;
+	int shadowMap;
+	//影を描画していればtrue
+	bool shadowDrawing = false;
+	//ライトの向き
+	VECTOR lightDir = VECTOR3(1, -1, 0);
+	//シャドウマップのボックス範囲
+	VECTOR boxMin = VECTOR3(-1000, -1, -1000);
+	VECTOR boxMax = VECTOR3(1000, 1000, 1000);
 };
+
+//影表示のための設定
+void ShadowInit()
+{
+	shadowMap = MakeShadowMap(1024, 1024);
+}
+
+//影を描画（シャドウマップへ描画）する前にやること
+void ShadowPreDraw()
+{
+	SetShadowMapDrawArea(shadowMap, boxMin, boxMax);
+	SetShadowMapLightDirection(shadowMap, lightDir);
+	ShadowMap_DrawSetup(shadowMap);
+}
+
+//影の描画が終わった時にやること
+void ShadowPostDraw()
+{
+	ShadowMap_DrawEnd();
+	SetUseShadowMap(0, shadowMap);
+}
+
+//描画が終わった時にやること	
+void ShadowEnd()
+{
+	SetUseShadowMap(0, -1);
+}
 
 void ObjectManager::Init()
 {
@@ -16,6 +51,7 @@ void ObjectManager::Init()
 	objects->clear();
 	needSortDraw = false;
 	running = nullptr;
+	ShadowInit();
 }
 
 void ObjectManager::Update()
@@ -57,12 +93,23 @@ void ObjectManager::Draw()
 		objects->sort([](GameObject* a, GameObject* b) {return a->GetDrawOrder() > b->GetDrawOrder(); });
 		needSortDraw = false;
 	}
+	ShadowPreDraw();
+	shadowDrawing = true;
 	for (GameObject* obj : *objects)
 	{
 		if (obj == nullptr || obj->DestroyRequested())
 			continue;
 		obj->Draw();
 	}
+	ShadowPostDraw();
+	shadowDrawing = false;
+	for (GameObject* obj : *objects)
+	{
+		if (obj == nullptr || obj->DestroyRequested())
+			continue;
+		obj->Draw();
+	}
+	ShadowEnd();
 }
 
 void ObjectManager::Release()
@@ -79,6 +126,22 @@ void ObjectManager::Release()
 	objects->clear();
 	delete objects;
 	objects = nullptr;
+}
+
+bool ObjectManager::ShadowDrawing()
+{
+	return shadowDrawing;
+}
+
+void ObjectManager::SetShadowLight(VECTOR dir)
+{
+	lightDir = dir;
+}
+
+void ObjectManager::SetShadowBox(VECTOR min, VECTOR max)
+{
+	boxMin = min;
+	boxMax = max;
 }
 
 void ObjectManager::Push(GameObject* obj)

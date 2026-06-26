@@ -68,6 +68,10 @@ void Camera::Draw()
         position = target;
     }
     SetCameraPositionAndTarget_UpVecY(position, lookPos + VECTOR3(0, 250, 0));
+
+    VECTOR3 min = position - VECTOR3(-1000, -1, -1000);
+    VECTOR3 max = position - VECTOR3(1000, 1000, 1000);
+    ObjectManager::SetShadowBox(min, max);
 }
 
 VECTOR3 Camera::Forward()

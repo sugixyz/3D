@@ -160,6 +160,7 @@
     <ClInclude Include="Source\Goblin.h" />
     <ClInclude Include="Source\Fade.h" />
     <ClInclude Include="Source\Lerp.h" />
+    <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\Pad.h" />
     <ClInclude Include="Source\Player.h" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Source\CountDown.cpp" />
     <ClCompile Include="Source\Goblin.cpp" />
     <ClCompile Include="Source\Fade.cpp" />
+    <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\Pad.cpp" />
     <ClCompile Include="Source\Player.cpp" />
