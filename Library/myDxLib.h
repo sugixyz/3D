@@ -1,5 +1,5 @@
 #pragma once
-#include <DxLib.h>
+#include<DxLib.h>
 #include <math.h>
 
 namespace DxLib {
@@ -14,7 +14,7 @@ namespace DxLib {
 	// ƒxƒNƒgƒ‹‚Ì‰ÁŽZ
 	inline const VECTOR operator +(const VECTOR& v1, const VECTOR& v2) { return VAdd(v1, v2); }
 	inline const VECTOR_D operator +(const VECTOR_D& v1, const VECTOR_D& v2) { return VAddD(v1, v2); }
-
+		
 	inline VECTOR& operator +=(VECTOR& v1, const VECTOR& v2) { return v1 = VAdd(v1, v2); }
 	inline VECTOR_D& operator +=(VECTOR_D& v1, const VECTOR_D& v2) { return v1 = VAddD(v1, v2); }
 
