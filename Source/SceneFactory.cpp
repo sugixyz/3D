@@ -4,6 +4,7 @@
 #include "BootScene.h"
 #include "TitleScene.h"
 #include "PlayScene.h"
+#include"ModelViewer.h"
 
 SceneBase* SceneFactory::CreateFirst()
 {
@@ -19,6 +20,10 @@ SceneBase * SceneFactory::Create(const std::string & name)
 	if (name == "PLAY")
 	{
 		return new PlayScene();
+	}
+	if (name == "MODEL")
+	{
+		return new ModelViewer();
 	}
 	MessageBox(NULL, ("éüÇÃÉVÅ[ÉìÇÕÇ†ÇËÇ‹ÇπÇÒ\n" + name).c_str(), "SceneFactory", MB_ICONERROR | MB_OK);
 	assert(false);

@@ -45,6 +45,9 @@ void TitleScene::Update()
 	if (Input::IsKeyOnTrig(KEY_INPUT_P)) {
 		SceneManager::ChangeScene("PLAY");
 	}
+	if (Input::IsKeyOnTrig(KEY_INPUT_M)) {
+		SceneManager::ChangeScene("MODEL");
+	}
 	Pad* pad = FindGameObject<Pad>();
 	if (pad->LStickX() >= 0.9f)
 	{
