@@ -1,4 +1,4 @@
-#include "Player.h"
+ï»¿#include "Player.h"
 #include <assert.h>
 #include "Stage.h"
 #include<cmath>
@@ -34,9 +34,9 @@ Player::Player(VECTOR pos, float rotY)
 
     damage = ATTACK_DAMAGE;
 
-    //ƒAƒjƒ[ƒ^[
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚¿ãƒ¼
     animator = new Animator(hModel);
-    //ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’Ç‰Á@”Ô†@–¼‘O@ƒ‹[ƒv‚·‚é‚©
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®è¿½åŠ ã€€ç•ªå·ã€€åå‰ã€€ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‹
     animator->AddFile(NEUTRAL, "data/models/Character/Player/Anim_Neutral.mv1", true);
     animator->AddFile(RUN, "data/models/Character/Player/Anim_Run.mv1", true);
     animator->AddFile(ATTACK, "data/models/Character/Player/Anim_Attack1.mv1", false);
@@ -80,11 +80,11 @@ void Player::Update()
     }
     }
     Stage* stage = FindGameObject<Stage>();
-    //’n–Ê‚Æ‚Ì“–‚½‚è”»’è
+    //åœ°é¢ã¨ã®å½“ãŸã‚Šåˆ¤å®š
     VECTOR3 hitPos;
-    // ‘«Œ³•t‹ß‚É’n–Ê‚ª‚ ‚é‚©ƒ`ƒFƒbƒN
+    // è¶³å…ƒä»˜è¿‘ã«åœ°é¢ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
     if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -1000, 0), &hitPos)) {
-        // u—‰º’†v‚©‚Âu’n–Ê‚æ‚è‰º‚É‚¢‚év‚¾‚¯’…’n‚³‚¹‚é
+        // ã€Œè½ä¸‹ä¸­ã€ã‹ã¤ã€Œåœ°é¢ã‚ˆã‚Šä¸‹ã«ã„ã‚‹ã€æ™‚ã ã‘ç€åœ°ã•ã›ã‚‹
         if (velocity.y <= 0 && position.y <= hitPos.y) {
             position.y = hitPos.y;
             velocity.y = 0.0f;
@@ -92,7 +92,7 @@ void Player::Update()
         }
     }
     else {
-        isJump = true; // ‘«Œ³‚É’n–Ê‚ª‚È‚¯‚ê‚Î‹ó’†
+        isJump = true; // è¶³å…ƒã«åœ°é¢ãŒãªã‘ã‚Œã°ç©ºä¸­
     }
 }
 
@@ -100,7 +100,7 @@ void Player::Draw()
 {
     Object3D::Draw();
 
-    //ƒT[ƒxƒ‹‚Ì•\¦
+    //ã‚µãƒ¼ãƒ™ãƒ«ã®è¡¨ç¤º
     int wp = MV1SearchFrame(hModel, "wp");
     MATRIX m = MV1GetFrameLocalWorldMatrix(hModel, wp);
     MV1SetMatrix(hWeapon, m);
@@ -109,40 +109,40 @@ void Player::Draw()
 
     if (not ObjectManager::ShadowDrawing())
     {
-        //è‚ÌêŠ
+        //æ‰‹ã®å ´æ‰€
         VECTOR3 p = VECTOR3(0, 0, 0) * m;
-        //ƒT[ƒxƒ‹‚Ìæ
+        //ã‚µãƒ¼ãƒ™ãƒ«ã®å…ˆ
         VECTOR3 s = VECTOR3(0, -100, 0) * m;
-        DrawLine3D(s, p, COL_RED);
+        //DrawLine3D(s, p, COL_RED);
 
-        DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
+        //DrawSphere3D(position + VECTOR3(0, 60, 0), 50, 20, GetColor(255, 0, 0), GetColor(255, 0, 0), 0);
 
-        DrawFormatString(400, 100, GetColor(255, 255, 255), "PLAYER %f %f %f", position.x, position.y, position.z);
+        //DrawFormatString(400, 100, GetColor(255, 255, 255), "PLAYER %f %f %f", position.x, position.y, position.z);
     }
 }
 
 void Player::UpdateReady() {
     
-    // ƒJƒƒ‰XV
+    // ã‚«ãƒ¡ãƒ©æ›´æ–°
     Camera* cam = FindGameObject<Camera>();
     cam->SetPlayerPosition(position);
 }
 
 void Player::UpdateInplay()
 {
-    //ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌÄ¶
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®å†ç”Ÿ
     animator->Update();
 
     stateInst->Update();
 
-    //HPŠÇ—
+    //HPç®¡ç†
     if (isDead())GetScene<PlayScene>()->OnResult();
 
-    // ƒJƒƒ‰XV
+    // ã‚«ãƒ¡ãƒ©æ›´æ–°
     Camera* cam = FindGameObject<Camera>();
     cam->SetPlayerPosition(position);
 
-    //ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì“K‰
+    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®é©å¿œ
     animator->Play((int)animState);
 
     Stage* stage = FindGameObject<Stage>();
@@ -161,7 +161,7 @@ void Object3D::DrawStamina()
     unsigned int color = COL_GREEN;
     if (stamina <= (STAMINA_MAX / 4))color = COL_RED;
     else if (stamina <= (STAMINA_MAX / 2))color = COL_YELLOW;
-    //¶ã‚ÉƒXƒ^ƒ~ƒiƒQ[ƒW•\¦
+    //å·¦ä¸Šã«ã‚¹ã‚¿ãƒŸãƒŠã‚²ãƒ¼ã‚¸è¡¨ç¤º
     float x, y, rate, w, h;
     x = 10;
     y = 10;
@@ -207,12 +207,12 @@ bool Player::Attack()
     auto gobs = FindGameObjects<Goblin>();
     for (auto g : gobs)
     {
-        //ƒT[ƒxƒ‹‚ÌÀ•W
+        //ã‚µãƒ¼ãƒ™ãƒ«ã®åº§æ¨™
         int wp = MV1SearchFrame(hModel, "wp");
         MATRIX m = MV1GetFrameLocalWorldMatrix(hModel, wp);
-        //è‚ÌêŠ
+        //æ‰‹ã®å ´æ‰€
         VECTOR3 p1 = VECTOR3(0, 0, 0) * m;
-        //ƒT[ƒxƒ‹‚Ìæ
+        //ã‚µãƒ¼ãƒ™ãƒ«ã®å…ˆ
         VECTOR3 p2 = VECTOR3(0, -100, 0) * m;
 
         if (g->AttackHit(p1, p2))
@@ -242,10 +242,10 @@ void PlayerNormal::Update()
     float speed = 8.0f;
     VECTOR3 vel = { 0,0,0 };
 
-    //ƒ_ƒbƒVƒ…
+    //ãƒ€ãƒƒã‚·ãƒ¥
     if (sY >= 0.9f && !pl->isExhausted) {
         speed *= 1.5f;
-        //‚T‚O•b‚ÅƒXƒ^ƒ~ƒiØ‚ê
+        //ï¼•ï¼ç§’ã§ã‚¹ã‚¿ãƒŸãƒŠåˆ‡ã‚Œ
         pl->stamina -= Time::DeltaTime() * 2;
         if (pl->stamina <= 0) {
             pl->stamina = 0.0;
@@ -253,11 +253,11 @@ void PlayerNormal::Update()
         }
     }
     else {
-        //ƒXƒ^ƒ~ƒi‰ñ•œ 100•b‚Å–ƒ^ƒ“
+        //ã‚¹ã‚¿ãƒŸãƒŠå›å¾© 100ç§’ã§æº€ã‚¿ãƒ³
         pl->stamina += Time::DeltaTime();
         if (pl->stamina > STAMINA_MAX)pl->stamina = STAMINA_MAX;
     }
-    //ƒXƒ^ƒ~ƒiØ‚ê
+    //ã‚¹ã‚¿ãƒŸãƒŠåˆ‡ã‚Œ
     if (pl->isExhausted) {
         speed *= 0.8;
         if (pl->stamina > (STAMINA_MAX / 2)) {
@@ -303,17 +303,17 @@ void PlayerNormal::Update()
     pl->velocity.y -= 0.5f;
     pl->position += pl->velocity;
 
-    //ƒWƒƒƒ“ƒv“ü—Í (Ú’n’†‚Ì‚İ)
+    //ã‚¸ãƒ£ãƒ³ãƒ—å…¥åŠ› (æ¥åœ°ä¸­ã®ã¿)
     if (pad->Pushed(Pad::JUMP) && !pl->isJump) {
         pl->ChangPlayState(Player::PlayState::sJump);
         return;
     }
 
-    //À•W‚ÌXV (‚±‚±‚Åˆê‹C‚ÉˆÚ“®)
+    //åº§æ¨™ã®æ›´æ–° (ã“ã“ã§ä¸€æ°—ã«ç§»å‹•)
     pl->position += pl->velocity;
 
-    //UŒ‚
-    //ƒL[‚ğ‰Ÿ‚·‚Æ‘¦UŒ‚
+    //æ”»æ’ƒ
+    //ã‚­ãƒ¼ã‚’æŠ¼ã™ã¨å³æ”»æ’ƒ
     //if (pad->Pushed(Pad::ATTACK)) 
     if(pad->PushTrigger(Pad::ATTACK))
     {
@@ -340,7 +340,7 @@ void PlayerAttack1::Update()
     float frame = pl->animator->GetCurrentFrame();
     if (frame <= 3.5f)
     {
-        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        //å¯¾è±¡ã®ã‚´ãƒ–ãƒªãƒ³ã‚’è¦‹ã¤ã‘ã‚‹
         Goblin* target = FindTarget();
         VECTOR3 plTarget;
         float rate = frame / 3.5f;
@@ -394,7 +394,7 @@ void PlayerAttack2::Update()
     float frame = pl->animator->GetCurrentFrame();
     if (frame <= 3.5f)
     {
-        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        //å¯¾è±¡ã®ã‚´ãƒ–ãƒªãƒ³ã‚’è¦‹ã¤ã‘ã‚‹
         Goblin* target = FindTarget();
         VECTOR3 plTarget;
         float rate = frame / 3.5f;
@@ -447,7 +447,7 @@ void PlayerAttack3::Update()
     float frame = pl->animator->GetCurrentFrame();
     if (frame <= 3.5f)
     {
-        //‘ÎÛ‚ÌƒSƒuƒŠƒ“‚ğŒ©‚Â‚¯‚é
+        //å¯¾è±¡ã®ã‚´ãƒ–ãƒªãƒ³ã‚’è¦‹ã¤ã‘ã‚‹
         Goblin* target = FindTarget();
         VECTOR3 plTarget;
         float rate = frame / 3.5f;
@@ -491,7 +491,7 @@ PlayerJump::~PlayerJump()
 void PlayerJump::Update()
 {
     pl->velocity.y -= 0.5f;
-    //À•W‚ÌXV (‚±‚±‚Åˆê‹C‚ÉˆÚ“®)
+    //åº§æ¨™ã®æ›´æ–° (ã“ã“ã§ä¸€æ°—ã«ç§»å‹•)
     pl->position += pl->velocity;
 
     if (pl->animState == Player::AnimState::JUMP_IN && pl->animator->IsFinish())

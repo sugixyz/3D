@@ -1,4 +1,4 @@
-#include "Goblin.h"
+ï»¿#include "Goblin.h"
 #include <assert.h>
 #include "Stage.h"
 #include"Player.h"
@@ -31,16 +31,16 @@ Goblin::Goblin(VECTOR pos, float rotY)
 
 	damage = ATTACK_DAMAGE;
 
-	//ƒAƒjƒ[ƒ^[
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚¿ãƒ¼
 	animator = new Animator(hModel);
-	//ƒAƒjƒ[ƒVƒ‡ƒ“‚Ì’Ç‰Á@”Ô†@–¼‘O@ƒ‹[ƒv‚·‚é‚©
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®è¿½åŠ ã€€ç•ªå·ã€€åå‰ã€€ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‹
 	animator->AddFile(NEUTRAL, "data/models/Character/Goblin/Anim_Neutral.mv1", true);
 	animator->AddFile(RUN, "data/models/Character/Goblin/Anim_Run.mv1", true);
 	animator->AddFile(KNOCKBACK, "data/models/Character/Goblin/Anim_Damage.mv1", false);
 	animState = AnimState::NEUTRAL;
 	animator->Play((int)animState);
 
-	//“–‚½‚è”»’è—p‚ÌƒJƒvƒZƒ‹‚Ì‰Šú‰»
+	//å½“ãŸã‚Šåˆ¤å®šç”¨ã®ã‚«ãƒ—ã‚»ãƒ«ã®åˆæœŸåŒ–
 	capsule = new Capsule(position + TOP_POS, position + BOTTOM_POS, 50.0f);
 
 	playState = sNormal;
@@ -68,9 +68,9 @@ void Goblin::Draw()
 
 	if (not ObjectManager::ShadowDrawing())
 	{
-		//ƒJƒvƒZƒ‹‚Ì•\¦
-		DrawCapsule3D(capsule->top, capsule->bottom, capsule->radius,
-			10, COL_RED, COL_RED, FALSE);
+		//ã‚«ãƒ—ã‚»ãƒ«ã®è¡¨ç¤º
+		//DrawCapsule3D(capsule->top, capsule->bottom, capsule->radius,
+		//	10, COL_RED, COL_RED, FALSE);
 	}
 }
 
@@ -94,8 +94,8 @@ void Goblin::UpdateInplay()
 		break;
 	}
 
-	//‹¤’Êˆ—
-	//HPŠÇ—
+	//å…±é€šå‡¦ç†
+	//HPç®¡ç†
 	if (isDead()) {
 		DestroyMe();
 		GetScene<PlayScene>()->AddGoblinCounter();
@@ -106,12 +106,12 @@ void Goblin::UpdateInplay()
 	velocity.y -= 0.5f;
 	position += velocity;
 
-	//’n–Ê‚Æ‚Ì“–‚½‚è”»’è
+	//åœ°é¢ã¨ã®å½“ãŸã‚Šåˆ¤å®š
 	Stage* stage = FindGameObject<Stage>();
 	VECTOR3 hitPos;
-	// ‘«Œ³•t‹ß‚É’n–Ê‚ª‚ ‚é‚©ƒ`ƒFƒbƒN
+	// è¶³å…ƒä»˜è¿‘ã«åœ°é¢ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	if (stage->CollideRay(position + VECTOR3(0, 100, 0), position + VECTOR3(0, -100, 0), &hitPos)) {
-		// u—‰º’†v‚©‚Âu’n–Ê‚æ‚è‰º‚É‚¢‚év‚¾‚¯’…’n‚³‚¹‚é
+		// ã€Œè½ä¸‹ä¸­ã€ã‹ã¤ã€Œåœ°é¢ã‚ˆã‚Šä¸‹ã«ã„ã‚‹ã€æ™‚ã ã‘ç€åœ°ã•ã›ã‚‹
 		if (velocity.y <= 0 && position.y <= hitPos.y) {
 			position.y = hitPos.y;
 			velocity.y = 0.0f;
@@ -122,29 +122,29 @@ void Goblin::UpdateInplay()
 
 void Goblin::UpdateNormal()
 {
-	//ˆÚ“®‘¬“x‚ğ0‚É
+	//ç§»å‹•é€Ÿåº¦ã‚’0ã«
 	velocity.x = 0;
 	velocity.z = 0;
 
 	spawnPoint = position;
 
-	//ƒvƒŒƒCƒ„[‚Æ‚ÌˆÊ’uŠÖŒW‚Å’ÇÕƒ‚[ƒh‚É
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®ä½ç½®é–¢ä¿‚ã§è¿½è·¡ãƒ¢ãƒ¼ãƒ‰ã«
 	Player* p = FindGameObject<Player>();
 	VECTOR3 toPlayer = p->GetPos() - position;
-	//‹ß‹——£‚¾‚Á‚½‚çi1‚j
+	//è¿‘è·é›¢ã ã£ãŸã‚‰ï¼ˆ1ï½ï¼‰
 	if (toPlayer.Size() < 100.0f)
 	{
 		playState = PlayState::sChase;
 		animState = AnimState::RUN;
 	}
-	//‹–ì”»’èA”¼Œa10‚A‹–ìŠp60“x
+	//è¦–é‡åˆ¤å®šã€åŠå¾„10ï½ã€è¦–é‡è§’60åº¦
 	else if (toPlayer.Size() < 1000.0f)
 	{
-		//ƒSƒuƒŠƒ“‚Ì³–Ê‚ÌƒxƒNƒgƒ‹
+		//ã‚´ãƒ–ãƒªãƒ³ã®æ­£é¢ã®ãƒ™ã‚¯ãƒˆãƒ«
 		VECTOR3 a = VECTOR3(0, 0, 1) * MGetRotY(rotation.y);
-		//ƒvƒŒƒCƒ„[‚Ö‚Ì³‹K‰»ƒxƒNƒgƒ‹	
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®æ­£è¦åŒ–ãƒ™ã‚¯ãƒˆãƒ«	
 		VECTOR3 b = toPlayer.Normalize();
-		//“àÏ
+		//å†…ç©
 		float dot = a.Dot(b);
 		if (dot > cos(80 * DegToRad)) {
 			playState = PlayState::sChase;
@@ -158,25 +158,25 @@ void Goblin::UpdateChase()
 	Player* p = FindGameObject<Player>();
 	VECTOR3 toPlayer = p->GetPos() - position;
 	position += VECTOR3(0, 0, 1) * MGetRotY(rotation.y) * 6.0f;
-	//ƒSƒuƒŠƒ“‚Ì‰E‚ÌƒxƒNƒgƒ‹
+	//ã‚´ãƒ–ãƒªãƒ³ã®å³ã®ãƒ™ã‚¯ãƒˆãƒ«
 	VECTOR3 right = VECTOR3(1, 0, 0) * MGetRotY(rotation.y);
-	//“àÏ
+	//å†…ç©
 	float dot = right.Dot(toPlayer);
-	//‰E‚É‚¢‚ê‚ÎAŠp“x‚ğ‘‚â‚·
+	//å³ã«ã„ã‚Œã°ã€è§’åº¦ã‚’å¢—ã‚„ã™
 	if (dot > 0)
 	{
 		rotation.y += 2.0f * DegToRad;
 	}
-	//¶‚É‚¢‚ê‚ÎAŠp“x‚ğŒ¸‚ç‚·
+	//å·¦ã«ã„ã‚Œã°ã€è§’åº¦ã‚’æ¸›ã‚‰ã™
 	else if (dot < 0)
 	{
 		rotation.y -= 2.0f * DegToRad;
 	}
 
-	//ƒXƒ|[ƒ“ƒ|ƒCƒ“ƒg‚©‚çˆê’è‹——£—£‚ê‚½‚çˆø‚«•Ô‚·
+	//ã‚¹ãƒãƒ¼ãƒ³ãƒã‚¤ãƒ³ãƒˆã‹ã‚‰ä¸€å®šè·é›¢é›¢ã‚ŒãŸã‚‰å¼•ãè¿”ã™
 	VECTOR3 toSpawn = spawnPoint - position;
 	float dist = toSpawn.Size();
-	//10mˆÈã‚¾‚Á‚½‚çˆø‚«•Ô‚·
+	//10mä»¥ä¸Šã ã£ãŸã‚‰å¼•ãè¿”ã™
 	if (dist >= 1000.0f)
 	{
 		playState = PlayState::sReturn;
@@ -188,22 +188,22 @@ void Goblin::UpdateReturn()
 {
 	VECTOR3 toSpawn = spawnPoint - position;
 	position += VECTOR3(0, 0, 1) * MGetRotY(rotation.y) * 3.0f;
-	//ƒSƒuƒŠƒ“‚Ì‰E‚ÌƒxƒNƒgƒ‹
+	//ã‚´ãƒ–ãƒªãƒ³ã®å³ã®ãƒ™ã‚¯ãƒˆãƒ«
 	VECTOR3 right = VECTOR3(1, 0, 0) * MGetRotY(rotation.y);
-	//“àÏ
+	//å†…ç©
 	float dot = right.Dot(toSpawn);
-	//‰E‚É‚¢‚ê‚ÎAŠp“x‚ğ‘‚â‚·
+	//å³ã«ã„ã‚Œã°ã€è§’åº¦ã‚’å¢—ã‚„ã™
 	if (dot > 0)
 	{
 		rotation.y += 2.0f * DegToRad;
 	}
-	//¶‚É‚¢‚ê‚ÎAŠp“x‚ğŒ¸‚ç‚·
+	//å·¦ã«ã„ã‚Œã°ã€è§’åº¦ã‚’æ¸›ã‚‰ã™
 	else if (dot < 0)
 	{
 		rotation.y -= 2.0f * DegToRad;
 	}
 
-	//ƒXƒ|[ƒ“ƒ|ƒCƒ“ƒg‚É‚Â‚¢‚½‚ç
+	//ã‚¹ãƒãƒ¼ãƒ³ãƒã‚¤ãƒ³ãƒˆã«ã¤ã„ãŸã‚‰
 	if (toSpawn.Size() <  100.0f)
 	{
 		playState = PlayState::sNormal;
@@ -234,7 +234,7 @@ void Goblin::KnockBack()
 {
 	if (playState == PlayState::sKnockback)return;
 	TakeDamage(ATTACK_DAMAGE);
-	//­‚µã‚É”ò‚Î‚·
+	//å°‘ã—ä¸Šã«é£›ã°ã™
 	velocity.y += 10.0f;
 	Player* p = FindGameObject<Player>();
 	VECTOR3 toPlayer = p->GetPos() - position;
@@ -247,7 +247,7 @@ void Goblin::KnockBack()
 
 bool Goblin::AttackHit(VECTOR3 pos1, VECTOR3 pos2)
 {
-	//ü•ªpos1-pos2‚ÆAcapsule‚Ìü•ª‚ªcapsule‚Ì”¼Œa‚æ‚è¬‚³‚¢‚©
+	//ç·šåˆ†pos1-pos2ã¨ã€capsuleã®ç·šåˆ†ãŒcapsuleã®åŠå¾„ã‚ˆã‚Šå°ã•ã„ã‹
 	float lenght = Segment_Segment_MinLength(pos1, pos2, capsule->top, capsule->bottom);
 	if (lenght <= capsule->radius)
 	{
